@@ -1,3 +1,4 @@
+#include <assert.h>
 
 #define ASSERT(condition)        \
 if (!(condition)) {              \
@@ -7,5 +8,5 @@ if (!(condition)) {              \
            #condition,           \
            __LINE__,             \
            __PRETTY_FUNCTION__); \
-}
-
+}                                \
+assert((condition));
