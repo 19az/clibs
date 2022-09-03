@@ -9,5 +9,4 @@ if (!(condition)) {              \
            #condition,           \
            __LINE__,             \
            __PRETTY_FUNCTION__); \
-}                                \
-assert((condition));
+}
