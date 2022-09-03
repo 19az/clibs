@@ -1,7 +1,7 @@
 CC = g++
 include ../../debugflags
-EXE = strings_ut
-SRCS = ../strings.cpp strings_ut.cpp
+EXE = unit_testing_ut
+SRCS = unit_testing_ut.cpp ../unit_testing.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(EXE)

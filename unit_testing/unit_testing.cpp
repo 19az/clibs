@@ -8,28 +8,29 @@ void unit_test(const char *func_name,
                const void *tests,
                size_t size,
                size_t nTests,
-               char (*run_one_test) (void*),
-               void (*failed_test_report) (void*)) {
+               char (*run_one_test) (const void*),
+               void (*failed_test_report) (const void*)) {
     ASSERT(tests != NULL)
     ASSERT(size != 0)
     ASSERT(nTests != 0)
     ASSERT(run_one_test != NULL)
 
     YELLOW(printf("Unit test for func %s is started\n", func_name);)
+    const unsigned char *uchptr_tests = (const unsigned char*) tests;
     char *results = (char*) calloc(nTests, sizeof(char));
     for (size_t test = 0; test < nTests; test++) {
-        YELLOW(printf("Test # %lu: ");)
-        char result = run_one_test(tests + size*test);
+        YELLOW(printf("Test # %lu: ", test + 1);)
+        char result = run_one_test(uchptr_tests + size*test);
         results[test] = result;
         if (result) {
             GREEN(printf("Ok\n");)
         } else {
             RED(printf("Failed\n");)
-            RED(failed_test_report(tests + size*test);)
+            RED(failed_test_report(uchptr_tests + size*test);)
         }
     }
-    report(results);
-    free(results, nTests);
+    report(results, nTests);
+    free(results);
     YELLOW(printf("Unit test is over\n\n");)
 }
 

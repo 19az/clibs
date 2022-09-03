@@ -1,6 +1,5 @@
 CC = g++
-CFLAGS =
-include ../../flags
+include ../../debugflags
 EXE = rwfile_ut
 SRCS = ../rwfile.cpp rwfile_ut.cpp ../../strings/strings.cpp
 OBJS = $(SRCS:.cpp=.o)

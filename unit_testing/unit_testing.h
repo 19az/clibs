@@ -1,6 +1,8 @@
 #ifndef UNIT_TESTING_H
 #define UNIT_TESTING_H
 
+#include <stddef.h>
+
 /// @file unit_testing.h
 
 /// @brief Conducts unit test for some function
@@ -16,11 +18,11 @@
 /// which takes pointer to a test data and do report(prints
 /// it in stdout or in a file, for example)
 void unit_test(const char *func_name,
-               void *tests,
+               const void *tests,
                size_t size,
                size_t nTests,
-               char (*run_one_test) (void*),
-               void (*failed_test_report) (void*));
+               char (*run_one_test) (const void*),
+               void (*failed_test_report) (const void*));
 
 /// @brief Shows numbers of failed test after unit test
 /// 
