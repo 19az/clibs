@@ -26,6 +26,6 @@ void unit_test(const char *func_name,
 /// 
 /// @param[in] results array with results of each test
 /// @param[in] nTests number f tests
-void report(const int *results, size_t nTests);
+void report(const char *results, size_t nTests);
 
 #endif /* UNIT_TESTING_H */

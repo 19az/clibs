@@ -33,7 +33,7 @@ void unit_test(const char *func_name,
     YELLOW(printf("Unit test is over\n\n");)
 }
 
-void report(const int *results, size_t nTests) {
+void report(const char *results, size_t nTests) {
     ASSERT(results != NULL)
     ASSERT(nTests != 0)
 
