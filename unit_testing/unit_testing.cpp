@@ -12,8 +12,10 @@ void unit_test(const char *func_name,
                void (*failed_test_report) (const void*)) {
     ASSERT(tests != NULL)
     ASSERT(size != 0)
-    ASSERT(nTests != 0)
     ASSERT(run_one_test != NULL)
+    if (nTests == 0) {
+        return;
+    }
 
     YELLOW(printf("Unit test for func %s is started\n", func_name);)
     const unsigned char *uchptr_tests = (const unsigned char*) tests;
@@ -21,6 +23,8 @@ void unit_test(const char *func_name,
     for (size_t test = 0; test < nTests; test++) {
         YELLOW(printf("Test # %lu: ", test + 1);)
         char result = run_one_test(uchptr_tests + size*test);
+        ASSERT(result != NULL)
+            
         results[test] = result;
         if (result) {
             GREEN(printf("Ok\n");)
@@ -36,7 +40,9 @@ void unit_test(const char *func_name,
 
 void report(const char *results, size_t nTests) {
     ASSERT(results != NULL)
-    ASSERT(nTests != 0)
+    if (nTests == 0) {
+        return;
+    }
 
     char none_failed_tests = 1;
     RED(printf("Failed test numbers are: ");)
