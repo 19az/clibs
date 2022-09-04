@@ -1,3 +1,6 @@
+#ifndef MY_ASSERT_H
+#define MY_ASSERT_H
+
 #include <stdio.h>
 
 #ifdef NDEBUG
@@ -12,4 +15,6 @@ if (!(condition)) {              \
            __LINE__,             \
            __PRETTY_FUNCTION__); \
 }
+#endif
+
 #endif
