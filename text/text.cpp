@@ -1,43 +1,43 @@
 #include <stdlib.h>
 
+#include "text.h"
+#include "../assert/my_assert.h"
 #include "../rwfile/rwfile.h"
 #include "../sorting/sorting.h"
-#include "text.h"
 
 int read_text_file(Text *text, const char *filename) {
-    if (text == NULL || filename == NULL) {
-        return ERR_ARGS_NULL_READ_TEXT_FILE;
-    }
+    ASSERT(text != NULL)
+    ASSERT(filename != NULL)
     
-    off_t file_size = get_file_size(filename);
+    int file_size = get_file_size(filename);
     if (file_size == -1) {
-        return ERR_FILE_SIZE_READ_TEXT_FILE;
+        return ERR_FILE_SIZE_TEXT;
+    } else if (file_size == 0) {
+        return ERR_FILE_EMPTY_TEXT;
     }
     
     char *buffer = (char*) calloc((size_t) file_size + 2, sizeof(char));
     if (buffer == NULL) {
-        return ERR_MEM_ALLOC_READ_TEXT_FILE;
+        return ERR_MEM_ALLOC_TEXT;
     }
 
     int rf_ret = read_file(filename, buffer, (size_t) file_size);
     if (rf_ret == -1) {
         free(buffer);
-        return ERR_FILE_OPEN_READ_TEXT_FILE;
+        return ERR_FILE_OPEN_TEXT;
     } else if (rf_ret == 0) {
         free(buffer);
-        return ERR_NO_BYTES_READ_TEXT_FILE;
+        return ERR_FILE_READ_TEXT;
     }
-
-    buffer[file_size] = '\n';
+    buffer[rf_ret] = '\n';
     text->buffer = buffer;
-    text->nSymbols = (size_t) file_size + 1;
+    text->nSymbols = (size_t) rf_ret + 1;
+
     return rf_ret;
 }
 
 int parse_lines_text(Text *text) {
-    if (text == NULL) {
-        return ERR_ARG_NULL_PARSE_LINES_TEXT;
-    }
+    ASSERT(text != NULL)
     
     size_t nLines = count_char_buffer(text->buffer, '\n');
     if (nLines == 0)
@@ -45,7 +45,7 @@ int parse_lines_text(Text *text) {
 
     Line **lines = (Line**) calloc(nLines, sizeof(Line*));
     if (lines == NULL) {
-        return ERR_MEM_ALLOC_PARSE_LINES_TEXT;
+        return ERR_MEM_ALLOC_TEXT;
     }
 
     char *line_ptr = text->buffer;
@@ -57,7 +57,7 @@ int parse_lines_text(Text *text) {
                 free(lines[j]);
             }
             free(lines);
-            return ERR_MEM_ALLOC_PARSE_LINES_TEXT;
+            return ERR_MEM_ALLOC_TEXT;
         }
         
         line_length = read_line_buffer(line_ptr);
@@ -71,8 +71,7 @@ int parse_lines_text(Text *text) {
 }
 
 void print_all_lines_stdout(const Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
     
     size_t nLines = text->nLines;
     Line **lines = text->lines;
@@ -82,15 +81,13 @@ void print_all_lines_stdout(const Text *text) {
 }
 
 void reverse_order_lines(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     reverse_order(text->lines, text->nLines, sizeof(Line*));
 }
 
 void sort_lines_length_bubble_sort(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     bubble_sort(text->lines,
                 text->nLines,
@@ -99,8 +96,7 @@ void sort_lines_length_bubble_sort(Text *text) {
 }
 
 void sort_lines_length_quick_sort(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     quick_sort(text->lines,
                text->nLines,
@@ -109,8 +105,7 @@ void sort_lines_length_quick_sort(Text *text) {
 }
 
 void sort_lines_lexicographic_bubble_sort(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     bubble_sort(text->lines,
                 text->nLines,
@@ -119,8 +114,7 @@ void sort_lines_lexicographic_bubble_sort(Text *text) {
 }
 
 void sort_lines_lexicographic_quick_sort(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     quick_sort(text->lines,
                text->nLines,
@@ -129,8 +123,7 @@ void sort_lines_lexicographic_quick_sort(Text *text) {
 }
 
 void sort_lines_reverse_lexicographic_bubble_sort(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     bubble_sort(text->lines,
                 text->nLines,
@@ -139,8 +132,7 @@ void sort_lines_reverse_lexicographic_bubble_sort(Text *text) {
 }
 
 void sort_lines_reverse_lexicographic_quick_sort(Text *text) {
-    if (text == NULL)
-        return;
+    ASSERT(text != NULL)
 
     quick_sort(text->lines,
                text->nLines,
