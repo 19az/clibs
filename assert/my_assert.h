@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #ifdef NDEBUG
-#define ASSERT(condition) ((void)0)
+#define ASSERT(condition) ((void)0);
 #else
 #define ASSERT(condition)        \
 if (!(condition)) {              \
