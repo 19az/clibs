@@ -3,87 +3,78 @@
 
 #include <math.h>
 
-/// @file equations.h
+/// @file equations_ut.h
 
-const int MAXNTESTS     = 1e2; ///< max number of tests in unit test for se_solve()
-const int MAXBUFFERSIZE = 1e3; ///< max len of file with unit test for se_solve()
-
-const char tests_filename_se[] = "sesut.txt"; ///< name of the file with tests for se_solve()
-const char tests_filename_le[] = "lesut.txt"; ///< name of the file with tests for le_solve()
+const char *tests_filename_se = "sesut.txt";
+const char *tests_filename_le = "lesut.txt";
 
 /// Struct to represent arguments for unit test for se_solve()
 struct SETestArgs {
-    double a     = NAN; ///< 1st coef
-    double b     = NAN; ///< 2nd coef
-    double c     = NAN; ///< 3rd coef
-    int nRoots   = 0;   ///< number of roots
-    double root1 = NAN; ///< 1st root
-    double root2 = NAN; ///< 2nd root
+    double a         = NAN; ///< 1st coef
+    double b         = NAN; ///< 2nd coef
+    double c         = NAN; ///< 3rd coef
+    int nRoots_exp   = 0;   ///< expected number of roots
+    double root1_exp = NAN; ///< expected 1st root
+    double root2_exp = NAN; ///< expected 2nd root
+    int nRoots_res   = 0;   ///< resulted number of roots
+    double root1_res = NAN; ///< resulted 1st root
+    double root2_res = NAN; ///< resulted 2nd root
+};
+
+/// Struct to represent arguments for unit test for le_solve()
+struct LETestArgs {
+    double a        = NAN; ///< 1ts coef
+    double b        = NAN; ///< 2nd coef
+    int nRoots_exp  = 0;   ///< expected number of roots
+    double root_exp = NAN; ///< expected root
+    int nRoots_res  = 0; ///< resulted number of roots
+    double root_res = NAN; ///< resulted root
 };
 
 /// @brief Gets one test for se_solve_ut() from buffer
 ///
-/// @param[out] test pointer to struct with args
+/// @param[out] test void pointer to struct with args
 /// @param[in] buffer buffer with text
 ///
 /// @return number of read bytes on success,
 /// -1 if some of given args are NULL 
-int get_one_test_se(SETestArgs *test, const char *buffer);
+int get_one_test_buf_se(void *test, const char *buffer);
 
 /// @brief Runs 1 test from unit test for se_solve()
 ///
-/// @param[in] test pointer to struct with args
-/// @param[out] nRoots pointer to the number of roots result
-/// @param[out] root1 pointer to the 1st root result
-/// @param[out] root2 pointer to the 2nd root result
+/// @param[in/out] voidptr_test pointer to struct SETestArgs
 ///
 /// @return 1 if test is passed,
 /// 0 if test is not passed,
-/// -1 if some of given args are NULL
-int run_test_se(SETestArgs *test, int* nRoots, double *root1, double *root2);
+/// 2 if test == NULL
+char run_test_se(void *voidptr_test);
 
-/// @brief Unit test for se_solve()
+/// @brief Prints args of failed test in unit test for se_solve()
 ///
-/// @note Shows report after tests using unit_test_report()
-void se_solve_ut();
-
-/// Struct to represent arguments for unit test for le_solve()
-struct LETestArgs {
-    double a    = NAN; ///< 1ts coef
-    double b    = NAN; ///< 2nd coef
-    int nRoots  = 0;   ///< number of roots
-    double root = NAN; ///< root
-};
+/// @param[in] voidptr_test void pointer to the struct SETestArgs
+void failed_test_report_se(const void *voidptr_test);
 
 /// @brief Gets one test for le_solve_ut() from buffer
 ///
-/// @param[out] test pointer to struct with args
+/// @param[out] test void pointer to struct with args
 /// @param[in] buffer buffer with text
 ///
 /// @return number of read bytes on success,
 /// -1 if some of given args are NULL 
-int get_one_test_le(LETestArgs *test, const char *buffer);
+int get_one_test_buf_le(void *test, const char *buffer);
                                               
 /// @brief Runs 1 test from unit test for le_solve()
 ///
-/// @param[in] test pointer to struct with args
-/// @param[out] nRoots pointer to the number of roots result
-/// @param[out] root1 pointer to the 1st root result
+/// @param[in/out] voidptr_test void pointer to struct LETestArgs
 ///
 /// @return 1 if test is passed,
 /// 0 if test is not passed,
-/// -1 if some of given args are NULL
-int run_test_le(LETestArgs *test, int* nRoots, double *root1);
+/// 2 if test == NULL
+char run_test_le(void *voidptr_test);
 
-/// @brief Unit test for le_solve()
-/// 
-/// @note Shows report after tests using unit_test_report()
-void le_solve_ut();
-
-/// @brief Shows report after unit test
+/// @brief Prints args of failed test in unit test for le_solve()
 ///
-/// @param[in] tests  array of results of unit tests
-void unit_test_report(int *report);
-
+/// @param[in] voidptr_test void pointer to the struct LETestArgs
+void failed_test_report_le(const void *voidptr_test);
 
 #endif /* EQUATIONS_UT_H */

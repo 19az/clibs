@@ -4,5 +4,4 @@
 cd unit_test_c
 make
 unit_test "test_c.txt" "unit_testing_c_ut" $'<'
-make clean
 cd ../

@@ -1,7 +1,7 @@
 CC = g++
 include ../../debugflags
 EXE = equations_ut
-SRCS = ../../rwfile/rwfile.cpp ../equations.cpp equations_ut.cpp
+SRCS = equations_ut.cpp ../equations.cpp ../../unit_testing/unit_testing.cpp ../../rwfile/rwfile.cpp ../../strings/strings.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(EXE)
