@@ -5,7 +5,5 @@ Provides functions for solving 1st and 2nd degree equations with real coefficien
 ## Testing
 For launch unit test run:
 
-    cd unit_test
-    make
-    ./equations_ut
-    make clean
+    sudo chmod +x test.sh
+    ./test.sh
