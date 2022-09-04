@@ -66,8 +66,7 @@ unsigned char *partition_quick_sort(unsigned char *ptr,
     ASSERT(ptr != NULL)
     ASSERT(size != 0)
     ASSERT(comp != 0)
-    if (count == 0)
-        return;
+    ASSERT(count != 0)
 
     const unsigned char *value = ptr + size*(count - 1);
     unsigned char *left  = ptr;
@@ -108,10 +107,12 @@ void quick_sort(void *ptr,
     if (count == 0)
         return;
 
-    if (count <= 1) return;
+    if (count <= 1)
+        return;
     unsigned char *uchptr = (unsigned char*) ptr;
     unsigned char *pivot = partition_quick_sort(uchptr, count, size, comp);
-    if (pivot == NULL) return;
+    if (pivot == NULL)
+        return;
 
     size_t left_count  = ((size_t) (pivot - uchptr)) / size;
     size_t right_count = count - left_count;
