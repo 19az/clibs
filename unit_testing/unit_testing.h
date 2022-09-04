@@ -12,7 +12,7 @@
 /// @param[in] size size of data for one test
 /// @param[in] get_one_test_buf pointer to the function
 /// which takes void ptr as places to store test data and const char ptr
-/// as place from where load test data
+/// as place from where load test data and returns number of read bytes
 /// @param[in] run_one_test pointer to the function
 /// which takes void ptr to a test data, runs test
 /// and return 1 if test is passed or 0 if failed
@@ -26,7 +26,7 @@
 void unit_test(const char *func_name,
                const char *tests_filename,
                size_t size,
-               int (*get_one_test_buf) (void*, const char*),
+               size_t (*get_one_test_buf) (void*, const char*),
                char (*run_one_test) (void*),
                void (*failed_test_report) (const void*));
 

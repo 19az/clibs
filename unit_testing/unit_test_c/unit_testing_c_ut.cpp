@@ -1,24 +1,29 @@
 #include <stdio.h>
 
 #include "../unit_testing.h"
-#include "unit_testing_c_ut.h"
 
-int get_one_test_buf(void *voidptr_test, const char *buffer) {
-   int *test = (int*) voidptr_test;
-   int bytes_read = 0;
-   sscanf(buffer, "%d %n", test, &bytes_read);
-   return bytes_read;
-}
+/// Read one block of args for test from buffer
+///
+/// @param[out] voidptr_test void pointer to the place
+/// where store test data
+/// @param[in] buffer text buffer
+///
+/// @return number of read bytes
+size_t get_one_test_buf(void *voidptr_test, const char *buffer);
 
-char run_test(void *data) {
-    return *((const int*) data) == 42;
-}
+/// @brief Checks if given number is equal to 42
+///
+/// @param[in] data void pointer to the number
+///
+/// @return 1 if given number is equal to 42,
+/// 0 otherwise
+char run_test(void *data);
 
-void failed_test_report(const void *data) {
-    printf("result = %d\n"
-           "ans = 42\n", 
-           *((const int*) data));
-}
+/// @brief Prints to the stdout given number
+/// and then prints "ans = 42\n"
+///
+/// @param[in] data void pointer to the number
+void failed_test_report(const void *data);
 
 const char *func_name = "test_func";
 const char *tests_filename = "test.txt";
@@ -48,4 +53,21 @@ int main() {
     }
 
     return 0;
+}
+
+size_t get_one_test_buf(void *voidptr_test, const char *buffer) {
+   int *test = (int*) voidptr_test;
+   int bytes_read = 0;
+   sscanf(buffer, "%d %n", test, &bytes_read);
+   return (size_t) bytes_read;
+}
+
+char run_test(void *data) {
+    return *((const int*) data) == 42;
+}
+
+void failed_test_report(const void *data) {
+    printf("result = %d\n"
+           "ans = 42\n", 
+           *((const int*) data));
 }

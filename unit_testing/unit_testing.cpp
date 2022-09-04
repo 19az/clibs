@@ -9,7 +9,7 @@
 void unit_test(const char *func_name,
                const char *tests_filename,
                size_t size,
-               int (*get_one_test_buf) (void*, const char*),
+               size_t (*get_one_test_buf) (void*, const char*),
                char (*run_one_test) (void*),
                void (*failed_test_report) (const void*)) {
     if (tests_filename == NULL) {
@@ -44,13 +44,13 @@ void unit_test(const char *func_name,
         return;
     }
 
-    int bytes_read = read_file(tests_filename, buffer, (size_t) file_size);
-    switch (bytes_read) {
+    int bytes_read_file = read_file(tests_filename, buffer, (size_t) file_size);
+    switch (bytes_read_file) {
         case 0:  ERROR_REPORT("error occured during reading file with tests")
+                 free(buffer);
                  return;
         case -1: ERROR_REPORT("cannot open file with tests")
-                 return;
-        case -3: ERROR_REPORT("buffer == NULL")
+                 free(buffer);
                  return;
         default: break;
     }
@@ -60,25 +60,28 @@ void unit_test(const char *func_name,
     unsigned char *tests = (unsigned char*) calloc(nTests, size);
     if (tests == NULL) {
         ERROR_REPORT("error in calloc")
+            free(buffer);
         return;
     }
 
-    bytes_read = 0;
+    size_t bytes_read_buf = 0;
     char *buffer_ptr = buffer;
-    for (size_t i = 0; (bytes_read = get_one_test_buf(tests + size*i, buffer_ptr)) > 0; i++) {
-        buffer_ptr += bytes_read;
+    for (size_t i = 0; (bytes_read_buf = get_one_test_buf(tests + size*i, buffer_ptr)) > 0; i++) {
+        buffer_ptr += bytes_read_buf;
     }
 
     YELLOW(printf("Unit test for func %s is started\n", func_name);)
     char *results = (char*) calloc(nTests, sizeof(char));
     if (results == NULL) {
         ERROR_REPORT("calloc error")
+        free(buffer);
+        free(tests);
         return;
     }
             
     for (size_t test = 0; test < nTests; test++) {
         YELLOW(printf("Test # %3lu: ", test + 1);)
-        char result = run_one_test(tests + size*test);
+        char result = (run_one_test(tests + size*test) == 1);
         results[test] = result;
         if (result) {
             GREEN(printf("Ok\n");)
