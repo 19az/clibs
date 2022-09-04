@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "../equations.h"
-#include "../../error_report/error_report.h"
+#include "../../assert/my_assert.h"
 #include "../../unit_testing/unit_testing.h"
 
 const char *tests_filename_se = "sesut.txt";
@@ -41,7 +41,7 @@ struct LETestArgs {
 /// @param[in] buffer buffer with text
 ///
 /// @return number of read bytes on success,
-/// -1 if some of given args are NULL 
+/// 0 if error occured 
 size_t get_one_test_buf_se(void *test, const char *buffer);
 
 /// @brief Runs 1 test from unit test for se_solve()
@@ -49,8 +49,7 @@ size_t get_one_test_buf_se(void *test, const char *buffer);
 /// @param[in/out] voidptr_test pointer to struct SETestArgs
 ///
 /// @return 1 if test is passed,
-/// 0 if test is not passed,
-/// 2 if test == NULL
+/// 0 if test is not passed
 char run_test_se(void *voidptr_test);
 
 /// @brief Prints args of failed test in unit test for se_solve()
@@ -64,7 +63,7 @@ void failed_test_report_se(const void *voidptr_test);
 /// @param[in] buffer buffer with text
 ///
 /// @return number of read bytes on success,
-/// -1 if some of given args are NULL 
+/// 0 if error occured
 size_t get_one_test_buf_le(void *test, const char *buffer);
                                               
 /// @brief Runs 1 test from unit test for le_solve()
@@ -72,8 +71,7 @@ size_t get_one_test_buf_le(void *test, const char *buffer);
 /// @param[in/out] voidptr_test void pointer to struct LETestArgs
 ///
 /// @return 1 if test is passed,
-/// 0 if test is not passed,
-/// 2 if test == NULL
+/// 0 if test is not passed
 char run_test_le(void *voidptr_test);
 
 /// @brief Prints args of failed test in unit test for le_solve()
@@ -100,14 +98,8 @@ int main(void) {
 }
 
 size_t get_one_test_buf_se(void *voidptr_test, const char *buffer) {
-    if (voidptr_test == NULL) {
-        ERROR_REPORT("test == NULL")
-        return 0;
-    }
-    if (buffer == NULL) {
-        ERROR_REPORT("buffer == NULL")
-        return 0;
-    }
+    ASSERT(voidptr_test != NULL)
+    ASSERT(buffer != NULL)
 
     SETestArgs *test = (SETestArgs*) voidptr_test;
     int bytes_read = 0;
@@ -120,20 +112,13 @@ size_t get_one_test_buf_se(void *voidptr_test, const char *buffer) {
            &test->root1_exp,
            &test->root2_exp,
            &bytes_read);
-
-    if (bytes_read < 0) {
-        ERROR_REPORT("error in sscanf")
-        return 0;
-    }
+    ASSERT(bytes_read >= 0)
 
     return (size_t) bytes_read;
 }
 
 char run_test_se(void *voidptr_test) {
-    if (voidptr_test == NULL) {
-        ERROR_REPORT("test == NULL")
-        return 2;
-    }
+    ASSERT(voidptr_test != NULL)
 
     SETestArgs *test = (SETestArgs*) voidptr_test;
     double root1_exp = test->root1_exp;
@@ -159,10 +144,7 @@ char run_test_se(void *voidptr_test) {
 }
 
 void failed_test_report_se(const void *voidptr_test) {
-    if (voidptr_test == NULL) {
-        ERROR_REPORT("test == NULL")
-        return;
-    }
+    ASSERT(voidptr_test != NULL)
 
     const SETestArgs *test = (const SETestArgs*) voidptr_test;
     printf("a           = %lg\n"
@@ -186,14 +168,8 @@ void failed_test_report_se(const void *voidptr_test) {
 }
 
 size_t get_one_test_buf_le(void *voidptr_test, const char *buffer) {
-    if (voidptr_test == NULL) {
-        ERROR_REPORT("test == NULL")
-        return 0;
-    }
-    if (buffer == NULL) {
-        ERROR_REPORT("buffer == NULL")
-        return 0;
-    }
+    ASSERT(voidptr_test != NULL)
+    ASSERT(buffer != NULL)
 
     LETestArgs *test = (LETestArgs*) voidptr_test;
     int bytes_read = 0;
@@ -204,20 +180,13 @@ size_t get_one_test_buf_le(void *voidptr_test, const char *buffer) {
            &test->nRoots_exp,
            &test->root_exp,
            &bytes_read);
-
-    if (bytes_read < 0) {
-        ERROR_REPORT("error in sscanf")
-        return 0;
-    }
+    ASSERT(bytes_read >= 0)
 
     return (size_t) bytes_read;
 }
 
 char run_test_le(void *voidptr_test) {
-    if (voidptr_test == NULL) {
-        ERROR_REPORT("test == NULL")
-        return 2;
-    }
+    ASSERT(voidptr_test != NULL)
 
     LETestArgs *test = (LETestArgs*) voidptr_test;
     double root_exp = test->root_exp;
@@ -236,10 +205,7 @@ char run_test_le(void *voidptr_test) {
 }
 
 void failed_test_report_le(const void *voidptr_test) {
-    if (voidptr_test == NULL) {
-        ERROR_REPORT("test == NULL")
-        return;
-    }
+    ASSERT(voidptr_test != NULL)
 
     const LETestArgs *test = (const LETestArgs*) voidptr_test;
     printf("a           = %lg\n"
