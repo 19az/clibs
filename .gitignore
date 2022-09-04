@@ -1,3 +1,4 @@
 *.o
 *_ut
 unit_testing/unit_test_sh/even
+unit_testing/unit_test_c/unit_testing_c_ut
