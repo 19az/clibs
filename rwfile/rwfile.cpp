@@ -4,11 +4,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "../assert/my_assert.h"
 #include "rwfile.h"
 
 int get_file_size(const char *filename) {
-    if (filename == NULL)
-        return ERR_ARGS_NULL_RWFILE;
+    ASSERT(filename != NULL)
 
     struct stat st;
     if (stat(filename, &st) == -1)
@@ -18,10 +18,10 @@ int get_file_size(const char *filename) {
 }
 
 int read_file(const char *filename, char *buffer, size_t nSymbols) {
+    ASSERT(filename != NULL)
+    ASSERT(buffer != NULL)
     if (nSymbols == 0)
         return 0;
-    if (filename == NULL || buffer == NULL)
-        return ERR_ARGS_NULL_RWFILE;
 
     FILE *file = fopen(filename, "r");
     if (file == NULL)

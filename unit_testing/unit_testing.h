@@ -19,10 +19,6 @@
 /// @param[in] failed_test_report pointer to the function
 /// which takes pointer to a test data and do report(prints
 /// it in stdout or in a file, for example)
-///
-/// @note if tests == NULL or size == 0 or run_one_test == NULL
-/// or failed_test_report == 0 func make ERROR_REPORT and return,
-/// if nTests == 0 func return
 void unit_test(const char *func_name,
                const char *tests_filename,
                size_t size,
@@ -34,9 +30,6 @@ void unit_test(const char *func_name,
 /// 
 /// @param[in] results array with results of each test
 /// @param[in] nTests number of tests
-///
-/// @note if results == NULL func make ERROR_REPORT and return,
-/// if nTests == 0 func return
 void report(const char *results, size_t nTests);
 
 #endif /* UNIT_TESTING_H */
