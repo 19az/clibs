@@ -1,4 +1,5 @@
 #include "symbols.h"
+#include "../assert/my_assert.h"
 
 int is_letter(char ch) {
     return ((ch >= 'A' && ch <= 'Z') ||
@@ -30,6 +31,7 @@ char lower_case(char ch) {
 }
 
 size_t skip_no_letters(const char *str, size_t len) {
+    ASSERT(str != NULL)
     size_t skip = 0;
     while (skip < len && !is_letter(str[skip])) {
         skip++;
@@ -38,6 +40,7 @@ size_t skip_no_letters(const char *str, size_t len) {
 }
 
 size_t skip_no_letters_reverse(const char *str, size_t len) {
+    ASSERT(str != NULL)
     while (len > 0 && !is_letter(str[len - 1])) len--;
     return len;
 }
