@@ -43,7 +43,7 @@ function report {
     red_printf "Failed test numbers are: "
     if [ -z "$failed_tests" ]
     then
-        red_printf "None"
+        green_printf "None"
     else
         red_printf "$failed_tests"
     fi

@@ -77,7 +77,7 @@ void unit_test(const char *func_name,
     }
             
     for (size_t test = 0; test < nTests; test++) {
-        YELLOW(printf("Test # %lu: ", test + 1);)
+        YELLOW(printf("Test # %3lu: ", test + 1);)
         char result = run_one_test(tests + size*test);
         results[test] = result;
         if (result) {
