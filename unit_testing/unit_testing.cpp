@@ -24,7 +24,7 @@ void unit_test(const char *func_name,
     if (file_size == 0) {
         ERROR_REPORT("file with tests is empty")
         return;
-    } else if (file_size == -2) {
+    } else if (file_size == -1) {
         ERROR_REPORT("cannot get stat of file with tests")
         return;
     }

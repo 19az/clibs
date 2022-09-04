@@ -12,7 +12,7 @@ int get_file_size(const char *filename) {
 
     struct stat st;
     if (stat(filename, &st) == -1)
-        return ERR_FILE_STAT_RWFILE;
+        return -1;
 
     return (int) st.st_size;
 }
@@ -25,7 +25,7 @@ int read_file(const char *filename, char *buffer, size_t nSymbols) {
 
     FILE *file = fopen(filename, "r");
     if (file == NULL)
-        return ERR_FILE_OPEN_RWFILE;
+        return -1;
 
     int bytes_read = (int) fread(buffer, sizeof(char), nSymbols, file);
 
