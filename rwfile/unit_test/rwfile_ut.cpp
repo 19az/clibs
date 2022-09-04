@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "../../unit_testing/colorful_text.h"
-#include "../rwfile.h"
 #include "rwfile_ut.h"
+#include "../rwfile.h"
 #include "../../strings/strings.h"
+#include "../../unit_testing/colorful_text.h"
 
 void get_file_size_ut() {
     YELLOW(printf("Unit test for get_file_size() started\n"););
@@ -23,7 +23,7 @@ void get_file_size_ut() {
     YELLOW(printf("Unit test is over\n\n"););
 }
 
-const int MAXBUFFERSIZE = 1e3;
+const int MAXBUFFERSIZE = 1e2;
 
 void read_file_ut() {
     YELLOW(printf("Unit test for read_file() started\n"););
