@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "strings.h"
+#include "../assert/my_assert.h"
 
 int my_puts(const char *str) {
     ASSERT(str != NULL)
