@@ -1,2 +1,3 @@
 *.o
 *_ut
+unit_testing/unit_test_sh/even
