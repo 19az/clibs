@@ -1,46 +1,105 @@
 #include <stdlib.h>
 
-#include "../assert/my_assert.h"
 #include "colorful_text.h"
 #include "unit_testing.h"
+#include "../error_report/error_report.h"
+#include "../rwfile/rwfile.h"
+#include "../strings/strings.h"
 
 void unit_test(const char *func_name,
-               const void *tests,
+               const char *tests_filename,
                size_t size,
-               size_t nTests,
-               char (*run_one_test) (const void*),
+               int (*get_one_test_buf) (void*, const char*),
+               char (*run_one_test) (void*),
                void (*failed_test_report) (const void*)) {
-    ASSERT(tests != NULL)
-    ASSERT(size != 0)
-    ASSERT(run_one_test != NULL)
-    if (nTests == 0) {
+    if (tests_filename == NULL) {
+        ERROR_REPORT("tests_filename == NULL")
+        return;
+    } else if (size == 0) {
+        ERROR_REPORT("size == 0")
+        return;
+    } else if (get_one_test_buf == NULL) {
+        ERROR_REPORT("get_one_test_buf == NULL")
+        return;
+    } else if (run_one_test == NULL) {
+        ERROR_REPORT("run_one_test == NULL")
+        return;
+    } else if (failed_test_report == NULL) {
+        ERROR_REPORT("failed_test_report == NULL")
         return;
     }
 
+    int file_size = get_file_size(tests_filename);
+    if (file_size == 0) {
+        ERROR_REPORT("file with tests is empty")
+        return;
+    } else if (file_size == -2) {
+        ERROR_REPORT("cannot get stat of file with tests")
+        return;
+    }
+
+    char *buffer = (char*) calloc((size_t) file_size + 1, sizeof(char));
+    if (buffer == NULL) {
+        ERROR_REPORT("error in calloc")
+        return;
+    }
+
+    int bytes_read = read_file(tests_filename, buffer, (size_t) file_size);
+    switch (bytes_read) {
+        case 0:  ERROR_REPORT("error occured during reading file with tests")
+                 return;
+        case -1: ERROR_REPORT("cannot open file with tests")
+                 return;
+        case -3: ERROR_REPORT("buffer == NULL")
+                 return;
+        default: break;
+    }
+    buffer[file_size] = '\0';
+
+    size_t nTests = count_char_str(buffer, '\n');
+    unsigned char *tests = (unsigned char*) calloc(nTests, size);
+    if (tests == NULL) {
+        ERROR_REPORT("error in calloc")
+        return;
+    }
+
+    bytes_read = 0;
+    char *buffer_ptr = buffer;
+    for (size_t i = 0; (bytes_read = get_one_test_buf(tests + size*i, buffer_ptr)) > 0; i++) {
+        buffer_ptr += bytes_read;
+    }
+
     YELLOW(printf("Unit test for func %s is started\n", func_name);)
-    const unsigned char *uchptr_tests = (const unsigned char*) tests;
     char *results = (char*) calloc(nTests, sizeof(char));
+    if (results == NULL) {
+        ERROR_REPORT("calloc error")
+        return;
+    }
+            
     for (size_t test = 0; test < nTests; test++) {
         YELLOW(printf("Test # %lu: ", test + 1);)
-        char result = run_one_test(uchptr_tests + size*test);
-        ASSERT(result != NULL)
-            
+        char result = run_one_test(tests + size*test);
         results[test] = result;
         if (result) {
             GREEN(printf("Ok\n");)
         } else {
             RED(printf("Failed\n");)
-            RED(failed_test_report(uchptr_tests + size*test);)
+            RED(failed_test_report(tests + size*test);)
         }
     }
     report(results, nTests);
+
     free(results);
+    free(tests);
+    free(buffer);
     YELLOW(printf("Unit test is over\n\n");)
 }
 
 void report(const char *results, size_t nTests) {
-    ASSERT(results != NULL)
-    if (nTests == 0) {
+    if (results == NULL) {
+        ERROR_REPORT("results == NULL")
+        return;
+    } else if (nTests == 0) {
         return;
     }
 
@@ -49,7 +108,7 @@ void report(const char *results, size_t nTests) {
     for (size_t test = 0; test < nTests; test++) {
         if (results[test] == 0) {
             none_failed_tests = 0;
-            RED(printf("%lu ", test);)
+            RED(printf("%lu ", test + 1);)
         }
     }
     if (none_failed_tests) {
