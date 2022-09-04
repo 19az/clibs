@@ -1,9 +1,11 @@
+
+/// @file strings_test.cpp
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../strings.h"
-#include "strings_ut.h"
 #include "../../unit_testing/colorful_text.h"
 
 #define UnitTest(x, y)                    \
@@ -11,22 +13,98 @@ YELLOW(printf("Unit test for " #x "\n");) \
 y;                                        \
 YELLOW(printf("Unit test is over\n\n");)
 
-const int MAXLENDEST = 100;
+/// @brief Unit test function for my_puts()
+void puts_test(const char *str);
+
+/// @brief Unit test function for my_strlen()
+void strlen_test(const char *str);
+
+/// @brief Unit test function for my_strcpy()
+void strcpy_test(const char *str);
+
+/// @brief Unit test function for my_strncpy()
+void strncpy_test(const char *str, size_t count);
+
+/// @brief Unit test function for my_strcat()
+void strcat_test(const char *dest, const char *src);
+
+/// @brief Unit test function for my_strncat()
+void strncat_test(const char *dest, const char *src, size_t count);
+
+/// @brief Unit test function for ny_fgets()
+void fgets_test();
+
+/// @brief Unit test function for my_strdup()
+void strdup_test(const char *str);
+
+/// @brief Unit test function for my_strchr()
+void strchr_test(const char *str, int ch);
+
+/// @brief Unit test function for count_char_str()
+void count_char_str_test(const char *str, char ch, size_t result);
+
+/// @brief Unit test function for my_puts()
+void puts_ut();
+
+/// @brief Unit test function for my_strlen()
+void strlen_ut();
+
+/// @brief Unit test function for my_strcpy()
+void strcpy_ut();
+
+/// @brief Unit test function for my_strncpy()
+void strncpy_ut();
+
+/// @brief Unit test function for my_strcat()
+void strcat_ut();
+
+/// @brief Unit test function for my_strncat()
+void strncat_ut();
+
+/// @brief Unit test function for ny_fgets()
+void fgets_ut();
+
+/// @brief Unit test function for my_strdup()
+void strdup_ut();
+
+/// @brief Unit test function for my_strchr()
+void strchr_ut();
+
+/// @brief Unit test function for count_char_str()
+void count_char_str_ut();
+
+const int MAXLENDEST = 100; ///< max length of dest string
+
+const char *filename_fgets_test = "fgets_test.txt"; ///< name of file with test for my_fgets()
+
+int main() {
+    UnitTest(puts,           puts_ut())
+    UnitTest(strlen,         strlen_ut())
+    UnitTest(strcpy,         strcpy_ut())
+    UnitTest(strncpy,        strncpy_ut())
+    UnitTest(strcat,         strcat_ut())
+    UnitTest(strcat,         strncat_ut())
+    UnitTest(fgets,          fgets_ut())
+    UnitTest(strdup,         strdup_ut())
+    UnitTest(strchr,         strchr_ut())
+    UnitTest(count_char_str, count_char_str_ut())
+
+    return 0;
+}
 
 void puts_test(const char *str) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d\n", nTest);)
+    YELLOW(printf("Test # %d\n", nTest++);)
 
     printf("Func from string.h:\n");
     puts(str);
     printf("My func:\n");
     my_puts(str);
-    nTest++;
 }
 
 void strlen_test(const char *str) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     size_t std_res = strlen(str);
     size_t my_res  = my_strlen(str);
@@ -38,12 +116,11 @@ void strlen_test(const char *str) {
     } else {
         GREEN(printf("Ok\n");)
     }
-    nTest++;
 }
 
 void strcpy_test(const char *str) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     char dest1[MAXLENDEST] = {};
     char dest2[MAXLENDEST] = {};
@@ -57,12 +134,11 @@ void strcpy_test(const char *str) {
     } else {
         GREEN(printf("Ok\n");)
     }
-    nTest++;
 }   
 
 void strncpy_test(const char *str, size_t count) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     char dest1[MAXLENDEST] = {};
     char dest2[MAXLENDEST] = {};
@@ -77,12 +153,11 @@ void strncpy_test(const char *str, size_t count) {
     } else {
         GREEN(printf("Ok\n");)
     }
-    nTest++;
 }
 
 void strcat_test(const char *dest, const char *src) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
         
     char dest1[MAXLENDEST] = {};
     char dest2[MAXLENDEST] = {};
@@ -99,12 +174,11 @@ void strcat_test(const char *dest, const char *src) {
     } else {
         GREEN(printf("Ok\n");)
     }
-    nTest++;
 } 
 
 void strncat_test(const char *dest, const char *src, size_t count) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     char dest1[MAXLENDEST] = {};
     char dest2[MAXLENDEST] = {};
@@ -122,22 +196,21 @@ void strncat_test(const char *dest, const char *src, size_t count) {
     } else {
         GREEN(printf("Ok\n");)
     }
-    nTest++;
 }
 
 void fgets_test() {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     FILE *file = NULL;
     file = fopen(filename_fgets_test, "r");
     char dest1[MAXLENDEST] = {};
-    fgets(dest1, 10, file);
+    fgets(dest1, MAXLENDEST, file);
     fclose(file);
 
     file = fopen(filename_fgets_test, "r");
     char dest2[MAXLENDEST] = {};
-    my_fgets(dest2, 10, file);
+    my_fgets(dest2, MAXLENDEST, file);
     fclose(file);
 
     if (strcmp(dest1, dest2)) {
@@ -147,12 +220,11 @@ void fgets_test() {
     } else {
         GREEN(printf("Ok\n"););
     }
-    nTest++;
 }
 
 void strdup_test(const char *str) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     char *dest1 = strdup(str);
     char *dest2 = my_strdup(str);
@@ -163,7 +235,6 @@ void strdup_test(const char *str) {
     } else {
         GREEN(printf("Ok\n"););
     }
-    nTest++;
 
     free(dest1);
     free(dest2);
@@ -171,7 +242,7 @@ void strdup_test(const char *str) {
 
 void strchr_test(const char *str, int ch) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     const char *std_res = strchr(str, ch);
     const char *my_res  = my_strchr(str, ch);
@@ -184,36 +255,29 @@ void strchr_test(const char *str, int ch) {
     } else {
         GREEN(printf("Ok\n"););
     }
-    nTest++;
 }
 
 void count_char_str_test(const char *str, char ch, size_t expected) {
     static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest);)
+    YELLOW(printf("Test # %d: ", nTest++);)
 
     size_t result = count_char_str(str, ch);
     if (result != expected) {
-       RED(printf("Failed\n");)
-       printf("String: %s\n"
-              "Char: %c\n"
-              "Expected result: %lu\n"
-              "Func result:     %lu\n",
-              str, ch, expected, result);
-   } else {
-       GREEN(printf("Ok\n");)
-   }
-    nTest++;
+        RED(printf("Failed\n");)
+        printf("String: %s\n"
+               "Char: %c\n"
+               "Expected result: %lu\n"
+               "Func result:     %lu\n",
+               str, ch, expected, result);
+    } else {
+        GREEN(printf("Ok\n");)
+    }
 }
 
 void puts_ut() {
-    const char *tests[1][] = {"",
-                              "a",
-                              "abc"};
-    int report[MAXNTESTS] = {};
-    for (size_t test = 0; test < MAXNTESTS; test++) {
-        report[test] = puts_test(tests[i]);
-        report[test + 1] = -1;
-    }
+    puts_test("");
+    puts_test("a");
+    puts_test("abc");
 }
 
 void strlen_ut() {
@@ -275,19 +339,4 @@ void count_char_str_ut() {
     count_char_str_test("aaa", 'a' , 3);
     count_char_str_test("a a", 'a' , 2);
     count_char_str_test("aba", 'a' , 2);
-}
-
-int main() {
-    UnitTest(puts, puts_ut())
-    UnitTest(strlen, strlen_ut())
-    UnitTest(strcpy, strcpy_ut())
-    UnitTest(strncpy, strncpy_ut())
-    UnitTest(strcat, strcat_ut())
-    UnitTest(strcat, strncat_ut())
-    UnitTest(fgets, fgets_ut())
-    UnitTest(strdup, strdup_ut())
-    UnitTest(strchr, strchr_ut())
-    UnitTest(count_char_str, count_char_str_ut())
-
-    return 0;
 }

@@ -1,5 +1,5 @@
 CC = g++
-include ../../debugflags
+include debugflags
 EXE = strings_ut
 SRCS = ../strings.cpp strings_ut.cpp
 OBJS = $(SRCS:.cpp=.o)
