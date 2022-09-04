@@ -4,6 +4,7 @@
 #include "../assert/my_assert.h"
 #include "../rwfile/rwfile.h"
 #include "../sorting/sorting.h"
+#include "../strings/strings.h"
 
 int read_text_file(Text *text, const char *filename) {
     ASSERT(text != NULL)
@@ -39,7 +40,7 @@ int read_text_file(Text *text, const char *filename) {
 int parse_lines_text(Text *text) {
     ASSERT(text != NULL)
     
-    size_t nLines = count_char_buffer(text->buffer, '\n');
+    size_t nLines = count_char_str(text->buffer, '\n');
     if (nLines == 0)
         return 0;
 
@@ -49,9 +50,8 @@ int parse_lines_text(Text *text) {
     }
 
     char *line_ptr = text->buffer;
-    size_t line_length = 0;
     for (size_t i = 0; i < nLines; i++) {
-        lines[i] = (Line*) calloc(sizeof(Line));
+        lines[i] = (Line*) malloc(sizeof(Line));
         if (lines[i] == NULL) {
             for (size_t j = 0; j < i; j++) {
                 free(lines[j]);
@@ -60,10 +60,8 @@ int parse_lines_text(Text *text) {
             return ERR_MEM_ALLOC_TEXT;
         }
         
-        line_length = read_line_buffer(line_ptr);
         lines[i]->start = line_ptr;
-        lines[i]->length = line_length;
-        line_ptr += line_length + 1;
+        line_ptr += get_line_len(lines[i]) + 1;
     }
     text->nLines = nLines;
     text->lines = lines;

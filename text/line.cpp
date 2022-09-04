@@ -2,7 +2,7 @@
 
 #include "line.h"
 #include "../assert/my_assert.h"
-#include "../srings/strings.h"
+#include "../strings/strings.h"
 #include "../symbols/symbols.h"
 
 void print_line_stdout(const Line *line) {
@@ -17,7 +17,7 @@ void print_line_stdout(const Line *line) {
 size_t get_line_len(Line *line) {
     ASSERT(line != NULL)
 
-    line->length = (size_t) my_strchr('\n') - line->start;
+    line->length = (size_t) (my_strchr(line->start, '\n') - line->start);
     return line->length;
 }
 
