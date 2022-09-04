@@ -5,11 +5,10 @@
 
 #define ERROR_REPORT(err_msg) \
 printf("Error: %s\n"          \
-    "in line %d "             \
-    "in func %s\n",           \
-    #condition,               \
-    __LINE__,                 \
-    __PRETTY_FUNCTION__);     \
-}
+       "in line %d "          \
+       "in func %s\n",        \
+       #err_msg,              \
+       __LINE__,              \
+       __PRETTY_FUNCTION__);  
 
 #endif
