@@ -12,6 +12,8 @@ struct Line {
 /// @brief Prints 1 line in stdout
 ///
 /// @param[in] pointer to the text
+/// 
+/// @note Function does not check if given arguments are valid pointers
 void print_line_stdout(const Line *line);
 
 /// @brief Reads 1 line from stdin
@@ -19,6 +21,8 @@ void print_line_stdout(const Line *line);
 /// @param line pointer to the Line
 ///
 /// @return number of read symbols
+/// 
+/// @note Function does not check if given arguments are valid pointers
 size_t get_line_len(Line *line);
 
 /// @brief Casts const void* to Line** for compare_lines_length()
@@ -26,7 +30,8 @@ size_t get_line_len(Line *line);
 /// @param[in] ptr void pointer to the pointer to Line
 ///
 /// @return pointer to Line on success,
-/// NULL if ptr == NULL
+/// 
+/// @note Function does not check if given arguments are valid pointers
 Line *cast_void_to_lineptr(const void *ptr);
 
 /// @brief Compares two Lines by length
@@ -37,7 +42,8 @@ Line *cast_void_to_lineptr(const void *ptr);
 /// @return 1 if 1st line's length is greater than 2nd's,
 /// 0 if lines' lengths are equal,
 /// -1 if 2nd line is larger,
-/// also return 0 if some of arguments are NULL
+/// 
+/// @note Function does not check if given arguments are valid pointers
 int compare_lines_length(const void *ptr1, const void *ptr2);
 
 /// @brief Compares two Lines lexicographically
@@ -48,7 +54,8 @@ int compare_lines_length(const void *ptr1, const void *ptr2);
 /// @return 1 if 1st line is lexicographically greater than 2nd,
 /// 0 if lines are equal,
 /// -1 if 2nd line is larger,
-/// also return 0 if some of arguments are NULL
+/// 
+/// @note Function does not check if given arguments are valid pointers
 int compare_lines_lexicographic(const void *ptr1, const void *ptr2);
 
 /// @brief Compares two reversed Lines lexicographically
@@ -59,7 +66,8 @@ int compare_lines_lexicographic(const void *ptr1, const void *ptr2);
 /// @return 1 if 1st reversed line is lexicographically greater than 2nd,
 /// 0 if lines are equal,
 /// -1 if 2nd reversed line is larger,
-/// also return 0 if some of arguments are NULL
+/// 
+/// @note Function does not check if given arguments are valid pointers
 int compare_lines_reverse_lexicographic(const void *ptr1, const void *ptr2);
 
 #endif /* LINE_H */

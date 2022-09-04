@@ -1,12 +1,12 @@
 #include <stdio.h>
 
 #include "line.h"
+#include "../assert/my_assert.h"
 #include "../srings/strings.h"
 #include "../symbols/symbols.h"
 
 void print_line_stdout(const Line *line) {
-    if (line == NULL)
-        return;
+    ASSERT(line != NULL)
 
     for (size_t i = 0; i < line->length; i++) {
         putchar(line->start[i]);
@@ -15,17 +15,16 @@ void print_line_stdout(const Line *line) {
 }
 
 size_t get_line_len(Line *line) {
-    if (line == NULL)
-        return 0;
+    ASSERT(line != NULL)
 
     line->length = (size_t) my_strchr('\n') - line->start;
     return line->length;
 }
 
 int compare_lines_length(const void *ptr1, const void *ptr2) {
-    if (ptr1 == NULL ||
-        ptr2 == NULL ||
-        ptr1 == ptr2)
+    ASSERT(ptr1 != NULL)
+    ASSERT(ptr2 != NULL)
+    if (ptr1 == ptr2)
         return 0;
 
     Line *lineptr1 = cast_void_to_lineptr(ptr1);
@@ -36,8 +35,7 @@ int compare_lines_length(const void *ptr1, const void *ptr2) {
 }
 
 Line *cast_void_to_lineptr(const void *ptr) {
-    if (ptr == NULL)
-        return NULL;
+    ASSERT(ptr != NULL)
 
     Line *lineptr = NULL;
     unsigned char *uchlineptr = (unsigned char*) &lineptr;
@@ -49,9 +47,9 @@ Line *cast_void_to_lineptr(const void *ptr) {
 }
 
 int compare_lines_lexicographic(const void *ptr1, const void *ptr2) {
-    if (ptr1 == NULL ||
-        ptr2 == NULL ||
-        ptr1 == ptr2) 
+    ASSERT(ptr1 != NULL)
+    ASSERT(ptr2 != NULL)
+    if (ptr1 == ptr2) 
         return 0;
 
     Line *lineptr1 = cast_void_to_lineptr(ptr1);
@@ -86,7 +84,10 @@ int compare_lines_lexicographic(const void *ptr1, const void *ptr2) {
 }
 
 int compare_lines_reverse_lexicographic(const void *ptr1, const void *ptr2) {
-    if (ptr1 == NULL || ptr2 == NULL || ptr1 == ptr2) return 0;
+    ASSERT(ptr1 != NULL)
+    ASSERT(ptr2 != NULL)
+    if (ptr1 == ptr2) 
+        return 0;
 
     Line *lineptr1 = cast_void_to_lineptr(ptr1);
     Line *lineptr2 = cast_void_to_lineptr(ptr2);
