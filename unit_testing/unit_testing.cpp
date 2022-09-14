@@ -13,34 +13,34 @@ void unit_test(const char *func_name,
                size_t (*get_one_test_buf) (void*, const char*),
                char (*run_one_test) (void*),
                void (*failed_test_report) (const void*)) {
-    ASSERT(func_name != NULL)
-    ASSERT(tests_filename != NULL)
-    ASSERT(size != 0)
-    ASSERT(get_one_test_buf != NULL)
-    ASSERT(run_one_test != NULL)
-    ASSERT(failed_test_report != NULL)
+    ASSERT(func_name != NULL);
+    ASSERT(tests_filename != NULL);
+    ASSERT(size != 0);
+    ASSERT(get_one_test_buf != NULL);
+    ASSERT(run_one_test != NULL);
+    ASSERT(failed_test_report != NULL);
 
     int file_size = get_file_size(tests_filename);
     if (file_size == 0) {
-        ERROR_REPORT("file with tests is empty")
+        ERROR_REPORT("file with tests is empty");
         return;
     } else if (file_size == -1) {
-        ERROR_REPORT("cannot get stat of file with tests")
+        ERROR_REPORT("cannot get stat of file with tests");
         return;
     }
 
     char *buffer = (char*) calloc((size_t) file_size + 1, sizeof(char));
     if (buffer == NULL) {
-        ERROR_REPORT("error in calloc")
+        ERROR_REPORT("error in calloc");
         return;
     }
 
     int bytes_read_file = read_file(tests_filename, buffer, (size_t) file_size);
     switch (bytes_read_file) {
-        case 0:  ERROR_REPORT("error occured during reading file with tests")
+        case 0:  ERROR_REPORT("error occured during reading file with tests");
                  free(buffer);
                  return;
-        case -1: ERROR_REPORT("cannot open file with tests")
+        case -1: ERROR_REPORT("cannot open file with tests");
                  free(buffer);
                  return;
         default: break;
@@ -50,7 +50,7 @@ void unit_test(const char *func_name,
     size_t nTests = count_char_str(buffer, '\n');
     unsigned char *tests = (unsigned char*) calloc(nTests, size);
     if (tests == NULL) {
-        ERROR_REPORT("error in calloc")
+        ERROR_REPORT("error in calloc");
         free(buffer);
         return;
     }
@@ -64,7 +64,7 @@ void unit_test(const char *func_name,
     YELLOW(printf("Unit test for func %s is started\n", func_name);)
     char *results = (char*) calloc(nTests, sizeof(char));
     if (results == NULL) {
-        ERROR_REPORT("calloc error")
+        ERROR_REPORT("calloc error");
         free(buffer);
         free(tests);
         return;
@@ -90,7 +90,7 @@ void unit_test(const char *func_name,
 }
 
 void report(const char *results, size_t nTests) {
-    ASSERT(results != NULL)
+    ASSERT(results != NULL);
     if (nTests == 0) {
         return;
     }

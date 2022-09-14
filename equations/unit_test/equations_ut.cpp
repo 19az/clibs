@@ -97,8 +97,8 @@ int main(void) {
 }
 
 size_t get_one_test_buf_se(void *voidptr_test, const char *buffer) {
-    ASSERT(voidptr_test != NULL)
-    ASSERT(buffer != NULL)
+    ASSERT(voidptr_test != NULL);
+    ASSERT(buffer != NULL);
 
     SETestArgs *test = (SETestArgs*) voidptr_test;
     int bytes_read = 0;
@@ -111,13 +111,13 @@ size_t get_one_test_buf_se(void *voidptr_test, const char *buffer) {
            &test->root1_exp,
            &test->root2_exp,
            &bytes_read);
-    ASSERT(bytes_read >= 0)
+    ASSERT(bytes_read >= 0);
 
     return (size_t) bytes_read;
 }
 
 char run_test_se(void *voidptr_test) {
-    ASSERT(voidptr_test != NULL)
+    ASSERT(voidptr_test != NULL);
 
     SETestArgs *test = (SETestArgs*) voidptr_test;
     double root1_exp = test->root1_exp;
@@ -143,7 +143,7 @@ char run_test_se(void *voidptr_test) {
 }
 
 void failed_test_report_se(const void *voidptr_test) {
-    ASSERT(voidptr_test != NULL)
+    ASSERT(voidptr_test != NULL);
 
     const SETestArgs *test = (const SETestArgs*) voidptr_test;
     printf("a           = %lg\n"
@@ -167,8 +167,8 @@ void failed_test_report_se(const void *voidptr_test) {
 }
 
 size_t get_one_test_buf_le(void *voidptr_test, const char *buffer) {
-    ASSERT(voidptr_test != NULL)
-    ASSERT(buffer != NULL)
+    ASSERT(voidptr_test != NULL);
+    ASSERT(buffer != NULL);
 
     LETestArgs *test = (LETestArgs*) voidptr_test;
     int bytes_read = 0;
@@ -179,13 +179,13 @@ size_t get_one_test_buf_le(void *voidptr_test, const char *buffer) {
            &test->nRoots_exp,
            &test->root_exp,
            &bytes_read);
-    ASSERT(bytes_read >= 0)
+    ASSERT(bytes_read >= 0);
 
     return (size_t) bytes_read;
 }
 
 char run_test_le(void *voidptr_test) {
-    ASSERT(voidptr_test != NULL)
+    ASSERT(voidptr_test != NULL);
 
     LETestArgs *test = (LETestArgs*) voidptr_test;
     double root_exp = test->root_exp;
@@ -204,7 +204,7 @@ char run_test_le(void *voidptr_test) {
 }
 
 void failed_test_report_le(const void *voidptr_test) {
-    ASSERT(voidptr_test != NULL)
+    ASSERT(voidptr_test != NULL);
 
     const LETestArgs *test = (const LETestArgs*) voidptr_test;
     printf("a           = %lg\n"
