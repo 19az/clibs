@@ -1,17 +1,21 @@
 CC = g++
 include ../../debugflags
 EXE = equations_ut
-SRCS = equations_ut.cpp ../equations.cpp ../../unit_testing/unit_testing.cpp ../../rwfile/rwfile.cpp ../../strings/strings.cpp
-OBJS = $(SRCS:.cpp=.o)
+SOURCES = equations_ut.cpp
+INCLUDES_DIR = ../..
+include $(INCLUDES_DIR)/equations/Makefile
+include $(INCLUDES_DIR)/unit_testing/Makefile
+
+OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(EXE)
 
-$(EXE): $(OBJS)
-	$(CC) -o $(EXE) $(OBJS) $(CFLAGS)
+$(EXE): $(OBJECTS) 
+	$(CC) $(CFLAGS) -o $@ $^
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(EXE) $(OBJS)
+	rm -rf $(EXE) $(OBJECTS)
 

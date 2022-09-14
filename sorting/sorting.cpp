@@ -104,8 +104,6 @@ void quick_sort(void *ptr,
     ASSERT(ptr != NULL)
     ASSERT(size != 0)
     ASSERT(comp != 0)
-    if (count == 0)
-        return;
 
     if (count <= 1)
         return;

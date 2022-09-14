@@ -39,7 +39,7 @@ ERR_COEF_EQUATIONS       = -2, ///< some coefficients are not finite
 /// @return number of roots on success,
 /// -1 if there are infinite number of roots
 /// -2 if some given coefficients are not finite numbers
-int se_solve(double a, double b, double c, double *root1, double *root2);
+int square_eq_solve(double a, double b, double c, double *root1, double *root2);
 
 /// @brief Solves linear equation
 ///
@@ -50,6 +50,6 @@ int se_solve(double a, double b, double c, double *root1, double *root2);
 /// @return number of roots on success,
 /// -1 if there are infinite number of roots,
 /// -2 if some given coefficients are not finite numbers,
-int le_solve(double a, double b, double *root);
+int linear_eq_solve(double a, double b, double *root);
 
 #endif /* EQUATIONS_H */

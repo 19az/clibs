@@ -1,17 +1,21 @@
 CC = g++
 include ../../debugflags
 EXE = rwfile_ut
-SRCS = ../rwfile.cpp rwfile_ut.cpp ../../strings/strings.cpp
-OBJS = $(SRCS:.cpp=.o)
+SOURCES = rwfile_ut.cpp
+INCLUDES_DIR = ../..
+include $(INCLUDES_DIR)/rwfile/Makefile
+include $(INCLUDES_DIR)/strings/Makefile
+
+OBJECTS = $(SOURCES:.cpp=.o)
 
 all: $(EXE)
 
-$(EXE): $(OBJS)
-	$(CC) -o $(EXE) $(OBJS) $(CFLAGS)
+$(EXE): $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^
 
 .cpp.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(EXE) $(OBJS)
+	rm -rf $(EXE) $(OBJECTS)
 

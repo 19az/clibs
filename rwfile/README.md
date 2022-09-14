@@ -5,6 +5,7 @@ Provides functions for input/output text from/into files
 ## Testing
 For unit test run:
 
+    cd unit_test
     make
     ./rwfile_ut
     make clean

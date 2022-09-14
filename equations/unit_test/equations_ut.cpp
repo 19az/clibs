@@ -1,5 +1,4 @@
 
-
 /// @file equations_ut.cpp
 
 #include <math.h>
@@ -12,7 +11,7 @@
 const char *tests_filename_se = "sesut.txt";
 const char *tests_filename_le = "lesut.txt";
 
-/// Struct to represent arguments for unit test for se_solve()
+/// Struct to represent arguments for unit test for square_eq_solve()
 struct SETestArgs {
     double a         = NAN; ///< 1st coef
     double b         = NAN; ///< 2nd coef
@@ -25,7 +24,7 @@ struct SETestArgs {
     double root2_res = NAN; ///< resulted 2nd root
 };
 
-/// Struct to represent arguments for unit test for le_solve()
+/// Struct to represent arguments for unit test for linear_eq_solve()
 struct LETestArgs {
     double a        = NAN; ///< 1ts coef
     double b        = NAN; ///< 2nd coef
@@ -35,7 +34,7 @@ struct LETestArgs {
     double root_res = NAN; ///< resulted root
 };
 
-/// @brief Gets one test for se_solve_ut() from buffer
+/// @brief Gets one test from buffer
 ///
 /// @param[out] test void pointer to struct with args
 /// @param[in] buffer buffer with text
@@ -44,7 +43,7 @@ struct LETestArgs {
 /// 0 if error occured 
 size_t get_one_test_buf_se(void *test, const char *buffer);
 
-/// @brief Runs 1 test from unit test for se_solve()
+/// @brief Runs 1 test from unit test for square_eq_solve()
 ///
 /// @param[in/out] voidptr_test pointer to struct SETestArgs
 ///
@@ -52,12 +51,12 @@ size_t get_one_test_buf_se(void *test, const char *buffer);
 /// 0 if test is not passed
 char run_test_se(void *voidptr_test);
 
-/// @brief Prints args of failed test in unit test for se_solve()
+/// @brief Prints args of failed test in unit test for square_eq_solve()
 ///
 /// @param[in] voidptr_test void pointer to the struct SETestArgs
 void failed_test_report_se(const void *voidptr_test);
 
-/// @brief Gets one test for le_solve_ut() from buffer
+/// @brief Gets one test from buffer
 ///
 /// @param[out] test void pointer to struct with args
 /// @param[in] buffer buffer with text
@@ -66,7 +65,7 @@ void failed_test_report_se(const void *voidptr_test);
 /// 0 if error occured
 size_t get_one_test_buf_le(void *test, const char *buffer);
                                               
-/// @brief Runs 1 test from unit test for le_solve()
+/// @brief Runs 1 test from unit test for linear_eq_solve()
 ///
 /// @param[in/out] voidptr_test void pointer to struct LETestArgs
 ///
@@ -74,20 +73,20 @@ size_t get_one_test_buf_le(void *test, const char *buffer);
 /// 0 if test is not passed
 char run_test_le(void *voidptr_test);
 
-/// @brief Prints args of failed test in unit test for le_solve()
+/// @brief Prints args of failed test in unit test for linear_eq_solve()
 ///
 /// @param[in] voidptr_test void pointer to the struct LETestArgs
 void failed_test_report_le(const void *voidptr_test);
 
 int main(void) {
-    unit_test("se_solve()",
+    unit_test("square_eq_solve()",
               tests_filename_se,
               sizeof(SETestArgs),
               get_one_test_buf_se,
               run_test_se,
               failed_test_report_se);
 
-    unit_test("le_solve()",
+    unit_test("linear_eq_solve()",
               tests_filename_le,
               sizeof(LETestArgs),
               get_one_test_buf_le,
@@ -125,11 +124,11 @@ char run_test_se(void *voidptr_test) {
     double root2_exp = test->root2_exp;
     double root1_res = NAN;
     double root2_res = NAN;
-    int nRoots_res = se_solve(test->a,
-                              test->b,
-                              test->c,
-                              &root1_res,
-                              &root2_res);
+    int nRoots_res = square_eq_solve(test->a,
+                                     test->b,
+                                     test->c,
+                                     &root1_res,
+                                     &root2_res);
 
     char result = (nRoots_res == test->nRoots_exp);
     if (result) {
@@ -191,9 +190,9 @@ char run_test_le(void *voidptr_test) {
     LETestArgs *test = (LETestArgs*) voidptr_test;
     double root_exp = test->root_exp;
     double root_res = NAN;
-    int nRoots_res = le_solve(test->a,
-                              test->b,
-                              &root_res);
+    int nRoots_res = linear_eq_solve(test->a,
+                                     test->b,
+                                     &root_res);
     char result = (nRoots_res == test->nRoots_exp);
     if (result) {
         if (nRoots_res == 1) (result && is_equal(root_res, root_exp));

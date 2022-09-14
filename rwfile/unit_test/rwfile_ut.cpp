@@ -1,9 +1,28 @@
 #include <stdio.h>
 
-#include "rwfile_ut.h"
 #include "../rwfile.h"
 #include "../../strings/strings.h"
 #include "../../unit_testing/colorful_text.h"
+
+const size_t nTests = 3;
+const char *files[]    = {"testfiles/empty", "testfiles/a", "testfiles/abc"};
+const int filesize[]   = {                0,             2,               4};
+const char* filedata[] = {               "",            "a\n",      "abc\n"};
+
+const int MAXBUFFERSIZE = 1e2;
+
+/// @brief Unit test function for get_file_size()
+void get_file_size_ut();
+
+/// @brief Unit test function for read_file()
+void read_file_ut();
+
+int main() {
+    get_file_size_ut();
+    read_file_ut();
+
+    return 0;
+}
 
 void get_file_size_ut() {
     YELLOW(printf("Unit test for get_file_size() started\n"););
@@ -22,8 +41,6 @@ void get_file_size_ut() {
     }
     YELLOW(printf("Unit test is over\n\n"););
 }
-
-const int MAXBUFFERSIZE = 1e2;
 
 void read_file_ut() {
     YELLOW(printf("Unit test for read_file() started\n"););
@@ -50,11 +67,4 @@ void read_file_ut() {
         }
     }
     YELLOW(printf("Unit test is over\n\n"););
-}
-
-int main() {
-    get_file_size_ut();
-    read_file_ut();
-
-    return 0;
 }
