@@ -2,15 +2,15 @@
 #include <stdio.h>
 
 #include "equations.h"
-#include "../assert/my_assert.h"
+#include "../error_handling/error_handling.h"
 
 int is_equal(double a, double b) {
     return (fabs(a - b) < EPS);
 }
 
 void swap(double *a, double *b) {
-    ASSERT(a != NULL);
-    ASSERT(b != NULL);
+    assert(a != NULL);
+    assert(b != NULL);
     if (a == b)
         return;
 
@@ -20,9 +20,9 @@ void swap(double *a, double *b) {
 }
 
 int square_eq_solve(double a, double b, double c, double *root1, double *root2) {
-    ASSERT(root1 != NULL);
-    ASSERT(root2 != NULL);
-    ASSERT(root1 != root2);
+    assert(root1 != NULL);
+    assert(root2 != NULL);
+    assert(root1 != root2);
     if (!std::isfinite(a) ||
         !std::isfinite(b) ||
         !std::isfinite(c))
@@ -76,7 +76,7 @@ int square_eq_solve(double a, double b, double c, double *root1, double *root2) 
 }
 
 int linear_eq_solve(double a, double b, double* root) {
-    ASSERT(root != NULL);
+    assert(root != NULL);
     if (!std::isfinite(a) ||
         !std::isfinite(b))
         return ERR_COEF_EQUATIONS;
@@ -90,3 +90,5 @@ int linear_eq_solve(double a, double b, double* root) {
     }
     return n_roots;
 }
+
+#include "../error_handling/undef_error_handling.h"

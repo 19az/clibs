@@ -25,7 +25,7 @@ void swap(double *a, double *b);
 enum retcodes_equations
 {
 INF_ROOTS_EQUATIONS      = -1, ///< infinite number of roots
-ERR_COEF_EQUATIONS       = -2, ///< some coefficients are not finite
+ERR_COEF_EQUATIONS       = -2  ///< some coefficients are not finite
 };
                                                         
 /// @brief Solves square equation

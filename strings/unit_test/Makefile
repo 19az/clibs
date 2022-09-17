@@ -4,7 +4,6 @@ EXE = strings_ut
 SOURCES = strings_ut.cpp
 INCLUDES_DIR = ../..
 include $(INCLUDES_DIR)/strings/Makefile
-include $(INCLUDES_DIR)/unit_testing/Makefile
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

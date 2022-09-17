@@ -23,7 +23,7 @@ void unit_test(const char *func_name,
                const char *tests_filename,
                size_t size,
                size_t (*get_one_test_buf) (void*, const char*),
-               char (*run_one_test) (void*),
+               int (*run_one_test) (void*),
                void (*failed_test_report) (const void*));
 
 /// @brief Shows numbers of failed test after unit test

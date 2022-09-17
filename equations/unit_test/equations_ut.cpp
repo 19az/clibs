@@ -1,81 +1,44 @@
 
-/// @file equations_ut.cpp
-
 #include <math.h>
 #include <stdio.h>
 
 #include "../equations.h"
-#include "../../assert/my_assert.h"
 #include "../../unit_testing/unit_testing.h"
 
 const char *tests_filename_se = "sesut.txt";
 const char *tests_filename_le = "lesut.txt";
 
-/// Struct to represent arguments for unit test for square_eq_solve()
 struct SETestArgs {
-    double a         = NAN; ///< 1st coef
-    double b         = NAN; ///< 2nd coef
-    double c         = NAN; ///< 3rd coef
-    int nRoots_exp   = 0;   ///< expected number of roots
-    double root1_exp = NAN; ///< expected 1st root
-    double root2_exp = NAN; ///< expected 2nd root
-    int nRoots_res   = 0;   ///< resulted number of roots
-    double root1_res = NAN; ///< resulted 1st root
-    double root2_res = NAN; ///< resulted 2nd root
+    double a         = NAN;
+    double b         = NAN;
+    double c         = NAN;
+    int nRoots_exp   = 0;
+    double root1_exp = NAN;
+    double root2_exp = NAN;
+    int nRoots_res   = 0;
+    double root1_res = NAN;
+    double root2_res = NAN;
 };
 
-/// Struct to represent arguments for unit test for linear_eq_solve()
 struct LETestArgs {
-    double a        = NAN; ///< 1ts coef
-    double b        = NAN; ///< 2nd coef
-    int nRoots_exp  = 0;   ///< expected number of roots
-    double root_exp = NAN; ///< expected root
-    int nRoots_res  = 0; ///< resulted number of roots
-    double root_res = NAN; ///< resulted root
+    double a        = NAN;
+    double b        = NAN;
+    int nRoots_exp  = 0;
+    double root_exp = NAN;
+    int nRoots_res  = 0;
+    double root_res = NAN;
 };
 
-/// @brief Gets one test from buffer
-///
-/// @param[out] test void pointer to struct with args
-/// @param[in] buffer buffer with text
-///
-/// @return number of read bytes on success,
-/// 0 if error occured 
 size_t get_one_test_buf_se(void *test, const char *buffer);
 
-/// @brief Runs 1 test from unit test for square_eq_solve()
-///
-/// @param[in/out] voidptr_test pointer to struct SETestArgs
-///
-/// @return 1 if test is passed,
-/// 0 if test is not passed
-char run_test_se(void *voidptr_test);
+int run_test_se(void *voidptr_test);
 
-/// @brief Prints args of failed test in unit test for square_eq_solve()
-///
-/// @param[in] voidptr_test void pointer to the struct SETestArgs
 void failed_test_report_se(const void *voidptr_test);
 
-/// @brief Gets one test from buffer
-///
-/// @param[out] test void pointer to struct with args
-/// @param[in] buffer buffer with text
-///
-/// @return number of read bytes on success,
-/// 0 if error occured
 size_t get_one_test_buf_le(void *test, const char *buffer);
                                               
-/// @brief Runs 1 test from unit test for linear_eq_solve()
-///
-/// @param[in/out] voidptr_test void pointer to struct LETestArgs
-///
-/// @return 1 if test is passed,
-/// 0 if test is not passed
-char run_test_le(void *voidptr_test);
+int run_test_le(void *voidptr_test);
 
-/// @brief Prints args of failed test in unit test for linear_eq_solve()
-///
-/// @param[in] voidptr_test void pointer to the struct LETestArgs
 void failed_test_report_le(const void *voidptr_test);
 
 int main(void) {
@@ -97,9 +60,6 @@ int main(void) {
 }
 
 size_t get_one_test_buf_se(void *voidptr_test, const char *buffer) {
-    ASSERT(voidptr_test != NULL);
-    ASSERT(buffer != NULL);
-
     SETestArgs *test = (SETestArgs*) voidptr_test;
     int bytes_read = 0;
     sscanf(buffer,
@@ -111,14 +71,11 @@ size_t get_one_test_buf_se(void *voidptr_test, const char *buffer) {
            &test->root1_exp,
            &test->root2_exp,
            &bytes_read);
-    ASSERT(bytes_read >= 0);
 
     return (size_t) bytes_read;
 }
 
-char run_test_se(void *voidptr_test) {
-    ASSERT(voidptr_test != NULL);
-
+int run_test_se(void *voidptr_test) {
     SETestArgs *test = (SETestArgs*) voidptr_test;
     double root1_exp = test->root1_exp;
     double root2_exp = test->root2_exp;
@@ -130,10 +87,10 @@ char run_test_se(void *voidptr_test) {
                                      &root1_res,
                                      &root2_res);
 
-    char result = (nRoots_res == test->nRoots_exp);
+    int result = (nRoots_res == test->nRoots_exp);
     if (result) {
-        if (nRoots_res == 1) (result && is_equal(root1_res, root1_exp));
-        if (nRoots_res == 2) (result && is_equal(root2_res, root2_exp));
+        if (nRoots_res == 1) result = (result && is_equal(root1_res, root1_exp));
+        if (nRoots_res == 2) result = (result && is_equal(root2_res, root2_exp));
     }
 
     test->nRoots_res = nRoots_res;
@@ -143,8 +100,6 @@ char run_test_se(void *voidptr_test) {
 }
 
 void failed_test_report_se(const void *voidptr_test) {
-    ASSERT(voidptr_test != NULL);
-
     const SETestArgs *test = (const SETestArgs*) voidptr_test;
     printf("a           = %lg\n"
            "b           = %lg\n"
@@ -167,9 +122,6 @@ void failed_test_report_se(const void *voidptr_test) {
 }
 
 size_t get_one_test_buf_le(void *voidptr_test, const char *buffer) {
-    ASSERT(voidptr_test != NULL);
-    ASSERT(buffer != NULL);
-
     LETestArgs *test = (LETestArgs*) voidptr_test;
     int bytes_read = 0;
     sscanf(buffer,
@@ -179,23 +131,20 @@ size_t get_one_test_buf_le(void *voidptr_test, const char *buffer) {
            &test->nRoots_exp,
            &test->root_exp,
            &bytes_read);
-    ASSERT(bytes_read >= 0);
 
     return (size_t) bytes_read;
 }
 
-char run_test_le(void *voidptr_test) {
-    ASSERT(voidptr_test != NULL);
-
+int run_test_le(void *voidptr_test) {
     LETestArgs *test = (LETestArgs*) voidptr_test;
     double root_exp = test->root_exp;
     double root_res = NAN;
     int nRoots_res = linear_eq_solve(test->a,
                                      test->b,
                                      &root_res);
-    char result = (nRoots_res == test->nRoots_exp);
+    int result = (nRoots_res == test->nRoots_exp);
     if (result) {
-        if (nRoots_res == 1) (result && is_equal(root_res, root_exp));
+        if (nRoots_res == 1) result = (result && is_equal(root_res, root_exp));
     }
 
     test->nRoots_res = nRoots_res;
@@ -204,8 +153,6 @@ char run_test_le(void *voidptr_test) {
 }
 
 void failed_test_report_le(const void *voidptr_test) {
-    ASSERT(voidptr_test != NULL);
-
     const LETestArgs *test = (const LETestArgs*) voidptr_test;
     printf("a           = %lg\n"
            "b           = %lg\n"

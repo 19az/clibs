@@ -1,44 +1,42 @@
 #include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "../assert/my_assert.h"
 #include "rwfile.h"
+#include "../error_handling/error_handling.h"
 
-int get_file_size(const char *filename) {
+size_t get_file_size(const char *filename ERR_SUPPORT) {
     ASSERT(filename != NULL);
+
+    (err) ? *err = 0 : 0;
 
     struct stat st = {};
-    if (stat(filename, &st) == -1)
-        return -1;
-
-    return (int) st.st_size;
-}
-
-int read_file(const char *filename, char *buffer, size_t nSymbols /* ERR_SUPPORT */) {
-    ASSERT(filename != NULL);
-    ASSERT(buffer != NULL);
-    if (nSymbols == 0)
+    if (stat(filename, &st) == -1 ERR_HANDLED(ERR_FILE_STAT_RWFILE, "cannot get file stat"))
+        return 0;
+    if (st.st_size < 0 ERR_HANDLED(ERR_FILE_SIZE_RWFILE, "bad file size"))
         return 0;
 
+    return (size_t) st.st_size;
+}
+
+size_t read_file(const char *filename, char *buffer, size_t size, size_t count ERR_SUPPORT) {
+    ASSERT(filename != NULL);
+    ASSERT(buffer   != NULL);
+    ASSERT(size     != 0);
+    if (count == 0)
+        return 0;
+
+    (err) ? *err = 0 : 0;
+
     FILE *file = fopen(filename, "r");
-    //FILE *file = $( fopen(filename, "r") );   ==>   __do_$ ( fopen(...), "fopen(...)", __LINE__ )
-    if (file == NULL)
-        return -1;
+    if (file == NULL ERR_HANDLED(ERR_FILE_OPEN_RWFILE, "cannot open file"))
+        return 0;
 
-    int bytes_read = (int) fread(buffer, sizeof(char), nSymbols, file);
+    size_t bytes_read = fread(buffer, size, count, file);
+    bytes_read < count ERR_HANDLED(ERR_FILE_READ_RWFILE, "read objects less than count");
 
-    fclose(file);
-   // fclose(file) == 0 asserted ("...");
-
-
- //|| __assert_fail (__LINE__)
-
-
- //|| (err)? *err = ERR_CLOSE_FILE : 0;
-    
-   
+    fclose(file) == EOF ERR_HANDLED(ERR_FILE_CLOSE_RWFILE, "cannot close file");
     return bytes_read;
 }
+
+#include "../error_handling/undef_error_handling.h"

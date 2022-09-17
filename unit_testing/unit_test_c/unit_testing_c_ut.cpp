@@ -17,7 +17,7 @@ size_t get_one_test_buf(void *voidptr_test, const char *buffer);
 ///
 /// @return 1 if given number is equal to 42,
 /// 0 otherwise
-char run_test(void *data);
+int run_test(void *data);
 
 /// @brief Prints to the stdout given number
 /// and then prints "ans = 42\n"
@@ -53,7 +53,7 @@ size_t get_one_test_buf(void *voidptr_test, const char *buffer) {
    return (size_t) bytes_read;
 }
 
-char run_test(void *data) {
+int run_test(void *data) {
     return *((const int*) data) == 42;
 }
 

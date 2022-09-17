@@ -2,10 +2,10 @@
 #include <stdlib.h>
 
 #include "strings.h"
-#include "../assert/my_assert.h"
+#include "../error_handling/error_handling.h"
 
 int my_puts(const char *str) {
-    ASSERT(str != NULL);
+    assert(str != NULL);
     for (size_t i = 0; str[i] != '\0'; ++i) {
         if (putchar(str[i]) == EOF) return EOF;
     }
@@ -13,7 +13,7 @@ int my_puts(const char *str) {
 }
 
 size_t my_strlen(const char *str) {
-    ASSERT(str != NULL);
+    assert(str != NULL);
     size_t i = 0;
     while (str[i] != '\0') {
         i++;
@@ -22,8 +22,8 @@ size_t my_strlen(const char *str) {
 }
 
 char *my_strcpy(char *dest, const char *src) {
-    ASSERT(dest != NULL);
-    ASSERT(src != NULL);
+    assert(dest != NULL);
+    assert(src != NULL);
     char *dest_ret = dest;
     while (*src != '\0') *(dest++) = *(src++);
     *dest = '\0';
@@ -31,8 +31,8 @@ char *my_strcpy(char *dest, const char *src) {
 }
 
 char *my_strncpy(char *dest, const char *src, size_t count) {
-    ASSERT(dest != NULL);
-    ASSERT(src != NULL);
+    assert(dest != NULL);
+    assert(src != NULL);
     char *dest_ret = dest;
     for (size_t i = 0; i < count; ++i) {
         if (*src == '\0') {
@@ -47,8 +47,8 @@ char *my_strncpy(char *dest, const char *src, size_t count) {
 }
 
 char *my_strcat(char *dest, const char *src) {
-    ASSERT(dest != NULL);
-    ASSERT(src  != NULL);
+    assert(dest != NULL);
+    assert(src  != NULL);
     char *dest_ret = dest;
     while (*dest != '\0') dest++;
     while (*src  != '\0') *(dest++) = *(src++);
@@ -57,8 +57,8 @@ char *my_strcat(char *dest, const char *src) {
 }
 
 char *my_strncat(char *dest, const char *src, size_t count) {
-    ASSERT(dest != NULL);
-    ASSERT(src != NULL);
+    assert(dest != NULL);
+    assert(src != NULL);
     char *dest_ret = dest;
     while (*dest != '\0') dest++;
     for (size_t i = 0; i < count; ++i) {
@@ -72,8 +72,8 @@ char *my_strncat(char *dest, const char *src, size_t count) {
 }
 
 char *my_fgets(char *str, int count, FILE *stream) {
-    ASSERT(str != NULL);
-    ASSERT(stream != NULL);
+    assert(str != NULL);
+    assert(stream != NULL);
     char *str_ret = str;
     int ch = 0;
     for (int i = 0; i < count - 1; ++i) {
@@ -98,7 +98,7 @@ char *my_fgets(char *str, int count, FILE *stream) {
 }
 
 char *my_strdup(const char *str) {
-    ASSERT(str != NULL);
+    assert(str != NULL);
     size_t len = my_strlen(str) + 1;
     char *dm_str = (char*) calloc(len, sizeof(char));
     if (dm_str == NULL) {
@@ -112,7 +112,7 @@ char *my_strdup(const char *str) {
 }
 
 char *my_strchr(const char *str, int ch) {
-    ASSERT(str != NULL);
+    assert(str != NULL);
     while (*str != ch) {
         if (*str == '\0') return NULL;
         str++;
@@ -121,8 +121,8 @@ char *my_strchr(const char *str, int ch) {
 }
 
 int my_strcmp(const char *str1, const char *str2) {
-    ASSERT(str1 != NULL);
-    ASSERT(str2 != NULL);
+    assert(str1 != NULL);
+    assert(str2 != NULL);
     while (*str1 != '\0' && *str1++ == *str2++); 
     if (*str1 > *str2) return 1;
     if (*str1 < *str2) return -1;
@@ -130,10 +130,12 @@ int my_strcmp(const char *str1, const char *str2) {
 }
 
 size_t count_char_str(const char *str, char ch) {
-    ASSERT(str != NULL);
+    assert(str != NULL);
     size_t count = 0;
     do {
         count += (*str == ch);
     } while (*str++ != '\0');
     return count;
 }
+
+#include "../error_handling/undef_error_handling.h"
