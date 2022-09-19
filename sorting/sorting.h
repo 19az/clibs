@@ -13,7 +13,7 @@
 ///
 /// @note if a == b returns, function does not check
 /// if given pointers and size are valid
-void swap_objects(void *a, void *b, size_t size);
+void swap_objects(void *voidptr_a, void *voidptr_b, size_t size);
 
 /// @brief Replaces elements of the given array in reverse order
 ///
@@ -39,12 +39,15 @@ void reverse_order(void *ptr, size_t count, size_t size);
 ///
 /// @note if count == 0 returns, function does not check
 /// if given pointers and size are valid
-void bubble_sort(void *ptr, size_t count, size_t size, int (*comp)(const void*, const void*));
+void bubble_sort(void    *ptr,
+                 size_t   count,
+                 size_t   size,
+                 int    (*comp)(const void*, const void*));
 
 /// @brief Does partition for quick_sort()
 ///
-/// @param ptr array to do partition
-/// @param[in] count number of elements in the array
+/// @param[in] left start of the array to do partition
+/// @param[in] right finish of the array
 /// @param[in] size size of each element of the array in bytes
 /// @param[in] comp comparison function which returns
 /// a negative integer value if the first argument is less than the second,
@@ -53,7 +56,10 @@ void bubble_sort(void *ptr, size_t count, size_t size, int (*comp)(const void*, 
 ///
 /// @note if count == 0 returns, function does not check
 /// if given pointers and size are valid
-unsigned char *partition_quick_sort(unsigned char *ptr, size_t count, size_t size, int (*comp)(const void*, const void*));
+uint8_t *partition_quick_sort(uint8_t  *left,
+                              uint8_t  *right,
+                              size_t    size,
+                              int     (*comp)(const void*, const void*));
 
 /// @brief Sorts the given array pointed to by ptr in ascending order.
 ///
@@ -69,6 +75,11 @@ unsigned char *partition_quick_sort(unsigned char *ptr, size_t count, size_t siz
 ///
 /// @note if count == 0 returns, function does not check
 /// if given pointers and size are valid
-void quick_sort(void *ptr, size_t count, size_t size, int (*comp)(const void*, const void*));
+///
+/// @note udefined behaviour if given comparator is not reflexive
+void quick_sort(void    *ptr,
+                size_t   count,
+                size_t   size,
+                int    (*comp)(const void*, const void*));
 
 #endif /* ENDIF */

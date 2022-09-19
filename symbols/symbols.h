@@ -42,20 +42,14 @@ char lower_case(char ch);
 /// @return letter in upper case or unchanged given symbol if it is not a letter
 char upper_case(char ch);
 
-/// @brief Skips chars in string which are not letters
+/// @brief Skips chars which are not letters in sequence of chars
 ///
-/// @param[in] str pointer to the start of the string
-/// @param[in] len length of given string
+/// @param[in] start pointer to the start of the sequence
+/// @param[in] finish pointer to the next symbol after the last symbol of the sequence
+/// @param[in} step step to next symbol of sequence
 ///
-/// @return number of skipped symbols
-size_t skip_no_letters(const char *str, size_t len);
-
-/// @brief Skips chars in string which are not letters in reverse order
-///
-/// @param[in] str pointer to the start of the string
-/// @param[in] len length of given string
-///
-/// @return number of skipped symbols
-size_t skip_no_letters_reverse(const char *str, size_t len);
+/// @return pointer to the finded letter in sequence
+/// or *finish if there are no letters in given sequence
+char *skip_no_letters(const char *start, const char *finish, int step);
 
 #endif /* SYMBOLS_H */

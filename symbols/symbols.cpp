@@ -68,7 +68,7 @@ char *skip_no_letters(const char *start, const char *finish, int step) {
     ASSERT(finish != NULL);
     ASSERT(step   != 0);
 
-    char *ptr = start;
+    char *ptr = const_cast<char*>(start);
     while ((finish - ptr) * step > 0 && !is_letter(*ptr)) ptr += step;
     return ptr;
 }

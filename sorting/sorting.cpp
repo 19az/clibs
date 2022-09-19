@@ -1,36 +1,63 @@
+
 #include <stdio.h>
+#include <stdint.h>
 
 #include "sorting.h"
-#include "../assert/my_assert.h"
 
-void swap_objects(void *a, void *b, size_t size) {
-    ASSERT(a != NULL)
-    ASSERT(b != NULL)
-    ASSERT(size != 0)
-    if (a == b)
+#include "../error_handling/error_handling.h"
+
+#define SWAPTYPE(type, while_if)                   \
+while_if (size >= sizeof(type)) {                  \
+    type tmp = 0;                                  \
+    tmp = *(type*) voidptr_a;                      \
+    *(type*) voidptr_a  = *(type*) voidptr_b;      \
+    *(type*) voidptr_b = tmp;                      \
+    size -= sizeof(type);                          \
+    voidptr_a = (void*) (((type*) voidptr_a) + 1); \
+    voidptr_b = (void*) (((type*) voidptr_b) + 1); \
+}
+
+#define SWAPTYPE_IF(type)    SWAPTYPE(type, if)
+#define SWAPTYPE_WHILE(type) SWAPTYPE(type, while)
+
+void swap_objects(void *voidptr_a, void *voidptr_b, size_t size) {
+    ASSERT(voidptr_a != NULL);
+    ASSERT(voidptr_b != NULL);
+    ASSERT(size      != 0);
+    if (voidptr_a == voidptr_b)
         return;
 
-    unsigned char *ucha = (unsigned char*) a;
-    unsigned char *uchb = (unsigned char*) b;
-    unsigned char tmp = 0;
-    for (size_t i = 0; i < size; ++i) {
-        tmp = ucha[i];
-        ucha[i] = uchb[i];
-        uchb[i] = tmp;
+    uintptr_t ptr_a = (uintptr_t) voidptr_a;
+    uintptr_t ptr_b = (uintptr_t) voidptr_b;
+    if        ((ptr_a & 7) == 0 && (ptr_b & 7) == 0) {
+        SWAPTYPE_WHILE(       uint64_t)
+        EVAL(MAP(SWAPTYPE_IF, uint32_t, uint16_t, uint8_t))
+    } else if ((ptr_a & 3)  == 0 && (ptr_b & 3)  == 0) {
+        SWAPTYPE_WHILE       (uint32_t)
+        EVAL(MAP(SWAPTYPE_IF, uint16_t, uint8_t))
+    } else if ((ptr_a & 1)  == 0 && (ptr_b & 1)  == 0) {
+        SWAPTYPE_WHILE       (uint16_t)
+        SWAPTYPE_IF          (uint8_t)
+    } else {
+        SWAPTYPE_WHILE       (uint8_t)
     }
 }
 
+#undef SWAPTYPE
+#undef SWAPTYPE_IF
+#undef SWAPTYPE_WHILE
+
 void reverse_order(void *ptr, size_t count, size_t size) {
-    ASSERT(ptr != NULL)
-    ASSERT(size != 0)
+    ASSERT(ptr  != NULL);
+    ASSERT(size != 0);
     if (count == 0)
         return;
 
     size_t left  = 0;
     size_t right = count - 1;
-    unsigned char *uchptr = (unsigned char*) ptr;
+    uint8_t *uptr = (uint8_t*) ptr;
     while (left < right) {
-        swap_objects(uchptr + size*left++, uchptr + size*right--, size);
+        swap_objects(uptr + size * left++, uptr + size * right--, size);
     }
 }
 
@@ -39,18 +66,20 @@ void bubble_sort(void *ptr,
                  size_t size,
                  int (*comp)(const void*, const void*))
 {
-    ASSERT(ptr != NULL)
-    ASSERT(size != 0)
-    ASSERT(comp != 0)
-    if (count == 0)
+    ASSERT(ptr  != NULL);
+    ASSERT(size != 0);
+    ASSERT(comp != NULL);
+    if (count <= 1)
         return;
 
-    unsigned char *uchptr = (unsigned char*) ptr;
+    uint8_t *uptr = (uint8_t*) ptr;
     for (size_t ascent = 0; ascent < count; ascent++) {
         size_t nPairs = count - ascent - 1;
+
         for (size_t pair = 0; pair < nPairs; pair++) {
-            unsigned char *pair_ptr1 = uchptr + size*pair;
-            unsigned char *pair_ptr2 = pair_ptr1 + size;
+            uint8_t *pair_ptr1 = uptr      + size * pair;
+            uint8_t *pair_ptr2 = pair_ptr1 + size;
+
             if (comp(pair_ptr1, pair_ptr2) > 0) {
                 swap_objects(pair_ptr1, pair_ptr2, size);
             }
@@ -58,32 +87,29 @@ void bubble_sort(void *ptr,
     }
 }
 
-unsigned char *partition_quick_sort(unsigned char *ptr,
-                                    size_t count,
-                                    size_t size,
-                                    int (*comp)(const void*, const void*))
+uint8_t *partition_quick_sort(uint8_t  *left,
+                              uint8_t  *right,
+                              size_t    size,
+                              int     (*comp)(const void*, const void*))
 {
-    ASSERT(ptr != NULL)
-    ASSERT(size != 0)
-    ASSERT(comp != 0)
-    ASSERT(count != 0)
+    ASSERT(left         != NULL);
+    ASSERT(right        != NULL);
+    ASSERT(right - left >= 1);
+    ASSERT(size         != 0);
+    ASSERT(comp         != NULL);
 
-    const unsigned char *value = ptr + size*(count - 1);
-    unsigned char *left  = ptr;
-    unsigned char *right = ptr + size*(count - 1);
-    const unsigned char  *left_border = left;
-    const unsigned char *right_border = right;
-    while (left <= right) {
+    const uint8_t *value = right;
+    while (left < right) {
         while (comp(left,  value) < 0) {
-            left += size;
-            if (left > right_border) return NULL;
+            left  += size;
         }
         while (comp(right, value) > 0) {
             right -= size;
-            if (right < left_border) return NULL;
         }
-        if (left >= right) break;
         
+        if (left > right) {
+            break;
+        }
         swap_objects(left, right, size);
         if (value == left) {
             value = right;
@@ -93,7 +119,7 @@ unsigned char *partition_quick_sort(unsigned char *ptr,
         left  += size;
         right -= size;
     }
-    return left;
+    return right;
 }
 
 void quick_sort(void *ptr,
@@ -101,19 +127,22 @@ void quick_sort(void *ptr,
                 size_t size,
                 int (*comp)(const void*, const void*))
 {
-    ASSERT(ptr != NULL)
-    ASSERT(size != 0)
-    ASSERT(comp != 0)
-
+    ASSERT(ptr   != NULL);
+    ASSERT(size  != 0);
+    ASSERT(comp  != NULL);
     if (count <= 1)
         return;
-    unsigned char *uchptr = (unsigned char*) ptr;
-    unsigned char *pivot = partition_quick_sort(uchptr, count, size, comp);
+
+    uint8_t *left  = (uint8_t*) ptr;
+    uint8_t *right = left + (count - 1) * size;
+    uint8_t *pivot  = partition_quick_sort(left, right, size, comp);
+    ASSERT(pivot >= left);
+    ASSERT(pivot <= right);
     if (pivot == NULL)
         return;
 
-    size_t left_count  = ((size_t) (pivot - uchptr)) / size;
-    size_t right_count = count - left_count;
-    quick_sort(ptr,    left_count, size, comp);
-    quick_sort(pivot, right_count, size, comp);
+    quick_sort(left,         ((size_t) (pivot - left) + size) / size, size, comp);
+    quick_sort(pivot + size, ((size_t) (right - pivot))       / size, size, comp);
 }
+
+#include "../error_handling/undef_error_handling.h"
