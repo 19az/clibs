@@ -1,6 +1,5 @@
 #ifndef RWFILE_H
 #define RWFILE_H
-
 #define HEADER
 
 #include "../error_handling/error_handling.h"
@@ -21,8 +20,7 @@ ERR_FILE_CLOSE_RWFILE = 1 << 4  ///< error during closing file
 ///
 /// @param[in] filename name of file
 ///
-/// @return size of file in bytes on success,
-/// 0 otherwise
+/// @return size of file in bytes
 ///
 /// @note uses ERR_SUPPORT, possible errors:
 /// ERR_FILE_STAT_RWFILE,
@@ -38,8 +36,7 @@ size_t get_file_size(const char *filename ERR_SUPPORT);
 /// @param[in] size  size of each object to read
 /// @param[in] count number of objects to read
 ///
-/// @return number of read bytes,
-/// 0 otherwise
+/// @return number of read bytes
 ///
 /// @note uses ERR_SUPPORT, possible errors:
 /// ERR_FILE_OPEN_RWFILE,
@@ -52,5 +49,4 @@ size_t read_file(const char *filename, char *buffer, size_t size, size_t count E
 #include "../error_handling/undef_error_handling.h"
 
 #undef HEADER
-
 #endif /* RWFILE_H */

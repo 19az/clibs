@@ -1,4 +1,6 @@
+
 #include <stdio.h>
+#include <string.h>
 
 #include "../rwfile.h"
 #include "../../strings/strings.h"
@@ -47,7 +49,7 @@ void read_file_ut() {
         char buffer[MAXBUFFERSIZE] = {};
         size_t result = read_file(files[i], buffer, sizeof(char), (size_t) filesize[i]);
         if (result == filesize[i]) {
-            if (my_strcmp(buffer, filedata[i]) == 0) {
+            if (strcmp(buffer, filedata[i]) == 0) {
                 GREEN(printf("OK\n");)
             } else {
                 RED(printf("Failed\n");)
