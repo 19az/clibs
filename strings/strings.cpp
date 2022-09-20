@@ -1,141 +1,90 @@
+
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "strings.h"
 #include "../error_handling/error_handling.h"
 
-int my_puts(const char *str) {
-    assert(str != NULL);
-    for (size_t i = 0; str[i] != '\0'; ++i) {
-        if (putchar(str[i]) == EOF) return EOF;
-    }
-    return putchar('\n');
-}
-
-size_t my_strlen(const char *str) {
-    assert(str != NULL);
-    size_t i = 0;
-    while (str[i] != '\0') {
-        i++;
-    }
-    return i;
-}
-
-char *my_strcpy(char *dest, const char *src) {
-    assert(dest != NULL);
-    assert(src != NULL);
-    char *dest_ret = dest;
-    while (*src != '\0') *(dest++) = *(src++);
-    *dest = '\0';
-    return dest_ret;
-}
-
-char *my_strncpy(char *dest, const char *src, size_t count) {
-    assert(dest != NULL);
-    assert(src != NULL);
-    char *dest_ret = dest;
-    for (size_t i = 0; i < count; ++i) {
-        if (*src == '\0') {
-            for (size_t j = i; j < count; ++j) {
-                *(dest++) = '\0';
-            }
-            break;
-        }
-        *(dest++) = *(src++);
-    }
-    return dest_ret;
-}
-
-char *my_strcat(char *dest, const char *src) {
-    assert(dest != NULL);
-    assert(src  != NULL);
-    char *dest_ret = dest;
-    while (*dest != '\0') dest++;
-    while (*src  != '\0') *(dest++) = *(src++);
-    *dest = '\0';
-    return dest_ret;
-}
-
-char *my_strncat(char *dest, const char *src, size_t count) {
-    assert(dest != NULL);
-    assert(src != NULL);
-    char *dest_ret = dest;
-    while (*dest != '\0') dest++;
-    for (size_t i = 0; i < count; ++i) {
-        if (*src == '\0') {
-            break;
-        }
-        *(dest++) = *(src++);
-    }
-    *dest = '\0';
-    return dest_ret;
-}
-
-char *my_fgets(char *str, int count, FILE *stream) {
-    assert(str != NULL);
-    assert(stream != NULL);
-    char *str_ret = str;
-    int ch = 0;
-    for (int i = 0; i < count - 1; ++i) {
-        ch = fgetc(stream);
-        if (ch == EOF) {
-            if (i == 0) {
-                str_ret = NULL;
-            } else {
-                *str = '\0';
-            }
-            break;
-        } else if (ch == '\n') {
-            *(str++) = '\n';
-            *str = '\0';
-            break;
-        } else {
-            *(str++) = (char) ch;
-        }
-    }
-    *str = '\0';
-    return str_ret;
-}
-
-char *my_strdup(const char *str) {
-    assert(str != NULL);
-    size_t len = my_strlen(str) + 1;
-    char *dm_str = (char*) calloc(len, sizeof(char));
-    if (dm_str == NULL) {
-        return NULL;
-    }
-    char *dm_str_ret = dm_str;
-    for (size_t i = 0; i < len; ++i) {
-        *(dm_str++) = *(str++);
-    }
-    return dm_str_ret;
-}
-
-char *my_strchr(const char *str, int ch) {
-    assert(str != NULL);
-    while (*str != ch) {
-        if (*str == '\0') return NULL;
-        str++;
-    }
-    return const_cast<char*>(str);
-}
-
-int my_strcmp(const char *str1, const char *str2) {
-    assert(str1 != NULL);
-    assert(str2 != NULL);
-    while (*str1 != '\0' && *str1++ == *str2++); 
-    if (*str1 > *str2) return 1;
-    if (*str1 < *str2) return -1;
-    return 0;
-}
-
 size_t count_char_str(const char *str, char ch) {
-    assert(str != NULL);
+    ASSERT(str != NULL);
     size_t count = 0;
     do {
         count += (*str == ch);
     } while (*str++ != '\0');
     return count;
 }
+
+char *skip_non_letters(const char *start, const char *finish, int step) {
+    ASSERT(start  != NULL);
+    ASSERT(finish != NULL);
+    ASSERT(step   != 0);
+
+    char *ptr = const_cast<char*>(start);
+    while ((finish - ptr) * step > 0 && !isalpha(*ptr)) ptr += step;
+    return ptr;
+}
+
+int compare_lines_lexicographic(const char *start1,
+                                const char *finish1,
+                                const char *start2,
+                                const char *finish2,
+                                int is_skip_non_letters /* = 1 */,
+                                int is_neglect_case     /* = 1 */)
+{
+    ASSERT(start1  != NULL);
+    ASSERT(start1  != NULL);
+    ASSERT(finish1 != NULL);
+    ASSERT(finish2 != NULL);
+
+    int step1 = ((finish1 - start1) >= 0) ? 1 : -1;
+    int step2 = ((finish2 - start2) >= 0) ? 1 : -1;
+    while (start1 != finish1 && start2 != finish2) {
+        if (is_skip_non_letters) {
+            start1 = skip_non_letters(start1, finish1, step1);
+            ASSERT(start1 == finish1 || isalpha(*start1));
+
+            start2 = skip_non_letters(start2, finish2, step2);
+            ASSERT(start2 == finish2 || isalpha(*start2));
+        }
+
+        int cur_letter1 = *start1;
+        int cur_letter2 = *start2;
+        if (is_neglect_case) {
+            cur_letter1 = toupper(cur_letter1);
+            cur_letter2 = toupper(cur_letter2);
+        }
+        if (start1 == finish1 || start2 == finish2 ||
+            cur_letter1 != cur_letter2) {
+            break;
+        }
+        start1 += step1;
+        start2 += step2;
+    }
+    if (is_skip_non_letters) {
+        start1 = skip_non_letters(start1, finish1, step1);
+        ASSERT(start1 == finish1 || isalpha(*start1));
+
+        start2 = skip_non_letters(start2, finish2, step2);
+        ASSERT(start2 == finish2 || isalpha(*start2));
+    }
+
+    int result = 0;
+    if (start1 == finish1) {
+        result = (start2 == finish2) ? 0 : -1;
+    } else {
+        if (start2 == finish2) {
+            result = 1;
+        } else {
+            if (is_neglect_case) {
+                result = (toupper(*start1) - toupper(*start2));
+            } else {
+                result = *start1 - *start2;
+            }
+        }
+    }
+    return result;
+}
+
 
 #include "../error_handling/undef_error_handling.h"

@@ -8,11 +8,11 @@
 /// Return codes for rwfile lib
 enum errcodes_rwfile
 {
-    ERR_FILE_STAT_RWFILE  = 1,      ///< error during getting file stat
-    ERR_FILE_SIZE_RWFILE  = 1 << 1, ///< bad file size
-    ERR_FILE_OPEN_RWFILE  = 1 << 2, ///< error during openning file
-    ERR_FILE_READ_RWFILE  = 1 << 3, ///< error during reading file
-    ERR_FILE_CLOSE_RWFILE = 1 << 4  ///< error during closing file
+ERR_FILE_STAT_RWFILE  = 1,      ///< error during getting file stat
+ERR_FILE_SIZE_RWFILE  = 1 << 1, ///< bad file size
+ERR_FILE_OPEN_RWFILE  = 1 << 2, ///< error during openning file
+ERR_FILE_READ_RWFILE  = 1 << 3, ///< error during reading file
+ERR_FILE_CLOSE_RWFILE = 1 << 4  ///< error during closing file
 };
 
 /// @file rwfile.h

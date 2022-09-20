@@ -1,5 +1,6 @@
 #ifndef EQUATIONS_H
 #define EQUATIONS_H
+#define HEADER
 
 /// @file equations.h
 
@@ -52,4 +53,5 @@ int square_eq_solve(double a, double b, double c, double *root1, double *root2);
 /// -2 if some given coefficients are not finite numbers,
 int linear_eq_solve(double a, double b, double *root);
 
+#undef HEADER
 #endif /* EQUATIONS_H */

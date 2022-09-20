@@ -1,0 +1,7 @@
+abc      abc       0  0  0  0
+abc      Abc       1  1  0  1
+abc      ab1c      1  0  1  1
+123abc   abc123   -1  0 -1  1
+1A2B3C   abc      -1 -1 -1 -1
+111      222      -1  0 -1 -1
+123abc   123abc    0  0  0  0

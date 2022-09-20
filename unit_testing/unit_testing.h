@@ -1,5 +1,6 @@
 #ifndef UNIT_TESTING_H
 #define UNIT_TESTING_H
+#define HEADER
 
 #include <stddef.h>
 
@@ -32,4 +33,5 @@ void unit_test(const char *func_name,
 /// @param[in] nTests number of tests
 void report(const char *results, size_t nTests);
 
+#undef HEADER
 #endif /* UNIT_TESTING_H */

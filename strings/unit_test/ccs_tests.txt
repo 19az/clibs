@@ -1,0 +1,5 @@
+a    a   1
+a    b   0
+aa   a   2
+aaa  a   3
+aca  a   2

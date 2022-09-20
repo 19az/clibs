@@ -15,6 +15,7 @@ while_if (size >= sizeof(type)) {                  \
     size -= sizeof(type);                          \
     voidptr_a = (void*) (((type*) voidptr_a) + 1); \
     voidptr_b = (void*) (((type*) voidptr_b) + 1); \
+    continue;                                      \
 }
 
 #define SWAPTYPE_IF(type)    SWAPTYPE(type, if)
@@ -27,25 +28,23 @@ void swap_objects(void *voidptr_a, void *voidptr_b, size_t size) {
     if (voidptr_a == voidptr_b)
         return;
 
-    uintptr_t ptr_a = (uintptr_t) voidptr_a;
-    uintptr_t ptr_b = (uintptr_t) voidptr_b;
-    if        ((ptr_a & 7) == 0 && (ptr_b & 7) == 0) {
-        SWAPTYPE_WHILE(       uint64_t)
-        EVAL(MAP(SWAPTYPE_IF, uint32_t, uint16_t, uint8_t))
-    } else if ((ptr_a & 3)  == 0 && (ptr_b & 3)  == 0) {
-        SWAPTYPE_WHILE       (uint32_t)
-        EVAL(MAP(SWAPTYPE_IF, uint16_t, uint8_t))
-    } else if ((ptr_a & 1)  == 0 && (ptr_b & 1)  == 0) {
-        SWAPTYPE_WHILE       (uint16_t)
-        SWAPTYPE_IF          (uint8_t)
-    } else {
-        SWAPTYPE_WHILE       (uint8_t)
+    while (size > 0) {
+        uintptr_t ptr_a = (uintptr_t) voidptr_a;
+        uintptr_t ptr_b = (uintptr_t) voidptr_b;
+        size_t align64 = sizeof(uint64_t) - 1;
+        size_t align32 = sizeof(uint32_t) - 1;
+        size_t align16 = sizeof(uint16_t) - 1;
+        if ((ptr_a & align64) == 0 && (ptr_b & align64) == 0)
+            SWAPTYPE_WHILE(uint64_t)
+        if ((ptr_a & align32) == 0 && (ptr_b & align32) == 0)
+            SWAPTYPE_IF(uint32_t)
+        if ((ptr_a & align16) == 0 && (ptr_b & align16) == 0)
+            SWAPTYPE_IF(uint16_t)
+        SWAPTYPE_IF(uint8_t)
     }
 }
 
 #undef SWAPTYPE
-#undef SWAPTYPE_IF
-#undef SWAPTYPE_WHILE
 
 void reverse_order(void *ptr, size_t count, size_t size) {
     ASSERT(ptr  != NULL);

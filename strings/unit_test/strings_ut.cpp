@@ -4,317 +4,254 @@
 #include <string.h>
 
 #include "../strings.h"
-#include "../../unit_testing/colorful_text.h"
+#include "../../unit_testing/unit_testing.h"
 
-#define UnitTest(x, y)                    \
-YELLOW(printf("Unit test for " #x "\n");) \
-y;                                        \
-YELLOW(printf("Unit test is over\n\n");)
+#include "../../error_handling/error_handling.h"
 
-void puts_test(const char *str);
+//count_char_str-decl----------------------------------------------------------
 
-void strlen_test(const char *str);
+const size_t MAXLEN_COUNT_CHAR_STR = 10;
+struct CountCharStrArgs {
+    char str[MAXLEN_COUNT_CHAR_STR] = {};
+    char counting_char = 0;
+    size_t expected = 0;
+    size_t result   = 0;
+};
 
-void strcpy_test(const char *str);
+size_t get_one_test_count_char_str(void *voidptr_test, const char *buffer);
 
-void strncpy_test(const char *str, size_t count);
+int run_one_test_count_char_str(void *voidptr_test);
 
-void strcat_test(const char *dest, const char *src);
+void failed_test_report_count_char_str(const void *voidptr_test);
 
-void strncat_test(const char *dest, const char *src, size_t count);
+//skip_non_letters-decl----------------------------------------------------------
 
-void fgets_test();
+const size_t MAXLEN_SKIP_NON_LETTERS = 10;
+struct SkipNonLettersArgs {
+    char  str[MAXLEN_SKIP_NON_LETTERS] = {};
+    char *start       = 0;
+    char *finish      = 0;
+    int   step        = 0;
+    char *expected    = NULL;
+    char *result      = NULL;
+};
 
-void strdup_test(const char *str);
+size_t get_one_test_skip_non_letters(void *voidptr_test, const char *buffer);
 
-void strchr_test(const char *str, int ch);
+int run_one_test_skip_non_letters(void *voidptr_test);
 
-void count_char_str_test(const char *str, char ch, size_t result);
+void failed_test_report_skip_non_letters(const void *voidptr_test);
 
-void puts_ut();
+//compare_lines_lex-decl----------------------------------------------
 
-void strlen_ut();
+const size_t MAXLEN_COMPARE_LINES_LEX = 20;
+struct CompareLinesLexArgs {
+    char str1[MAXLEN_COMPARE_LINES_LEX] = {};
+    char str2[MAXLEN_COMPARE_LINES_LEX] = {};
+    int expected_default          = 0;
+    int expected_skip_non_letters = 0;
+    int expected_neglect_case     = 0;
+    int expected_reverse_order    = 0;
+    int result_default            = 0;
+    int result_skip_non_letters   = 0;
+    int result_neglect_case       = 0;
+    int result_reverse_order      = 0;
+};
 
-void strcpy_ut();
+size_t get_one_test_compare_lines_lex(void *voidptr_test, const char *buffer);
 
-void strncpy_ut();
+int run_one_test_compare_lines_lex(void *voidptr_test);
 
-void strcat_ut();
+void failed_test_report_compare_lines_lex(const void *voidptr_test);
 
-void strncat_ut();
-
-void fgets_ut();
-
-void strdup_ut();
-
-void strchr_ut();
-
-void count_char_str_ut();
-
-const int MAXLENDEST = 100; 
-
-const char *filename_fgets_test = "fgets_test.txt";
+//main--------------------------------------------------------------------------
 
 int main() {
-    UnitTest(puts,           puts_ut())
-    UnitTest(strlen,         strlen_ut())
-    UnitTest(strcpy,         strcpy_ut())
-    UnitTest(strncpy,        strncpy_ut())
-    UnitTest(strcat,         strcat_ut())
-    UnitTest(strcat,         strncat_ut())
-    UnitTest(fgets,          fgets_ut())
-    UnitTest(strdup,         strdup_ut())
-    UnitTest(strchr,         strchr_ut())
-    UnitTest(count_char_str, count_char_str_ut())
+    unit_test("count_char_str",
+              "ccs_tests.txt",
+              sizeof(CountCharStrArgs),
+              get_one_test_count_char_str,
+              run_one_test_count_char_str,
+              failed_test_report_count_char_str);
+
+    unit_test("skip_non_letters",
+              "snl_tests.txt",
+              sizeof(SkipNonLettersArgs),
+              get_one_test_skip_non_letters,
+              run_one_test_skip_non_letters,
+              failed_test_report_skip_non_letters);
+
+    unit_test("compare_lines_lexicographic",
+              "cll_tests.txt",
+              sizeof(CompareLinesLexArgs),
+              get_one_test_compare_lines_lex,
+              run_one_test_compare_lines_lex,
+              failed_test_report_compare_lines_lex);
 
     return 0;
 }
 
-void puts_test(const char *str) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d\n", nTest++);)
+//count_char_str-def----------------------------------------------------------
 
-    printf("Func from string.h:\n");
-    puts(str);
-    printf("My func:\n");
-    my_puts(str);
+size_t get_one_test_count_char_str(void *voidptr_test, const char *buffer) {
+    CountCharStrArgs *test = (CountCharStrArgs*) voidptr_test;
+    int bytes_read = 0;
+    int result = sscanf(buffer,
+                        "%s %c %lu %n",
+                        test->str,
+                        &test->counting_char,
+                        &test->expected,
+                        &bytes_read);
+    ASSERT(result == 3 || result == EOF, "cannot read all arguments");
+    if (result == EOF) return 0;
+
+    return (size_t) bytes_read;
 }
 
-void strlen_test(const char *str) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+int run_one_test_count_char_str(void *voidptr_test) {
+    CountCharStrArgs *test = (CountCharStrArgs*) voidptr_test;
 
-    size_t std_res = strlen(str);
-    size_t my_res  = my_strlen(str);
-    if (std_res != my_res) {
-        RED(printf("Failed\n");)
-        printf("String: %s\n"
-               "Std func result: %lu\n"
-               "My func result: %lu\n", str, std_res, my_res);
-    } else {
-        GREEN(printf("Ok\n");)
-    }
+    size_t result = count_char_str(test->str, test->counting_char);
+    test->result = result;
+    return result == test->expected;
 }
 
-void strcpy_test(const char *str) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+void failed_test_report_count_char_str(const void *voidptr_test) {
+    const CountCharStrArgs *test = (const CountCharStrArgs*) voidptr_test;
 
-    char dest1[MAXLENDEST] = {};
-    char dest2[MAXLENDEST] = {};
-    strcpy(dest1, str);
-    my_strcpy(dest2, str);
-    if (strcmp(dest1, dest2)) {
-        RED(printf("Failed\n");)
-        printf("String: %s\n"
-               "Std func result: %s\n"
-               "My func result:  %s\n", str, dest1, dest2);
-    } else {
-        GREEN(printf("Ok\n");)
-    }
-}   
-
-void strncpy_test(const char *str, size_t count) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
-
-    char dest1[MAXLENDEST] = {};
-    char dest2[MAXLENDEST] = {};
-    strncpy(dest1, str, count);
-    my_strncpy(dest2, str, count);
-    if (strcmp(dest1, dest2)) {
-        RED(printf("Failed\n");)
-        printf("String: %s\n"
-               "Count: %lu\n"
-               "Std func result: %s\n"
-               "My func result:  %s\n", str, count, dest1, dest2);
-    } else {
-        GREEN(printf("Ok\n");)
-    }
+    printf("str           = %s\n"
+           "counting char = %c\n"
+           "expected      = %lu\n"
+           "result        = %lu\n",
+           test->str,
+           test->counting_char,
+           test->expected,
+           test->result);
 }
 
-void strcat_test(const char *dest, const char *src) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
-        
-    char dest1[MAXLENDEST] = {};
-    char dest2[MAXLENDEST] = {};
-    strcpy(dest1, dest);
-    strcpy(dest2, dest);
-    strcat(dest1, src);
-    my_strcat(dest2, src);
-    if (strcmp(dest1, dest2)) {
-        RED(printf("Failed\n");)
-        printf("Dest string: %s\n"
-               "Src string: %s\n"
-               "Std func result: %s\n"
-               "My func result:  %s\n", dest, src, dest1, dest2);
-    } else {
-        GREEN(printf("Ok\n");)
-    }
-} 
+//skip_non_letters-def---------------------------------------------------------
 
-void strncat_test(const char *dest, const char *src, size_t count) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+size_t get_one_test_skip_non_letters(void *voidptr_test, const char *buffer) {
+    SkipNonLettersArgs *test = (SkipNonLettersArgs*) voidptr_test;
+    int start_index    = 0;
+    int finish_index   = 0;
+    int expected_index = 0;
+ 
+    int bytes_read = 0;
+    int result = sscanf(buffer,
+                        "%s %d %d %d %d %n",
+                        test->str,
+                        &start_index,
+                        &finish_index,
+                        &test->step,
+                        &expected_index,
+                        &bytes_read);
+    ASSERT(result == 5 || result == EOF, "cannot read all arguments");
+    if (result == EOF) return 0;
 
-    char dest1[MAXLENDEST] = {};
-    char dest2[MAXLENDEST] = {};
-    strcpy(dest1, dest);
-    strcpy(dest2, dest);
-    strncat(dest1, src, count);
-    my_strncat(dest2, src, count);
-    if (strcmp(dest1, dest2)) {
-        RED(printf("Failed\n");)
-        printf("Dest string: %s\n"
-               "Src string: %s\n"
-               "Count: %lu\n"
-               "Std func result: %s\n"
-               "My func result:  %s\n", dest, src, count, dest1, dest2);
-    } else {
-        GREEN(printf("Ok\n");)
-    }
+    test->start    = test->str + start_index;
+    test->finish   = test->str + finish_index;
+    test->expected = test->str + expected_index;
+    return (size_t) bytes_read;
 }
 
-void fgets_test() {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+int run_one_test_skip_non_letters(void *voidptr_test) {
+    SkipNonLettersArgs *test = (SkipNonLettersArgs*) voidptr_test;
 
-    FILE *file = NULL;
-    file = fopen(filename_fgets_test, "r");
-    char dest1[MAXLENDEST] = {};
-    fgets(dest1, MAXLENDEST, file);
-    fclose(file);
-
-    file = fopen(filename_fgets_test, "r");
-    char dest2[MAXLENDEST] = {};
-    my_fgets(dest2, MAXLENDEST, file);
-    fclose(file);
-
-    if (strcmp(dest1, dest2)) {
-        RED(printf("Failed\n");)
-        printf("Std func string: %s\n"
-               "My func string: %s\n", dest1, dest2);
-    } else {
-        GREEN(printf("Ok\n"););
-    }
+    test->result = skip_non_letters(test->start, test->finish, test->step);
+    return (test->result == test->expected);
 }
 
-void strdup_test(const char *str) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+void failed_test_report_skip_non_letters(const void *voidptr_test) {
+    const SkipNonLettersArgs *test = (const SkipNonLettersArgs*) voidptr_test;
 
-    char *dest1 = strdup(str);
-    char *dest2 = my_strdup(str);
-    if (strcmp(dest1, dest2)) {
-        RED(printf("Failed\n");)
-        printf("Std func string: %s\n"
-               "My func string: %s\n", dest1, dest2);
-    } else {
-        GREEN(printf("Ok\n"););
-    }
-
-    free(dest1);
-    free(dest2);
+    printf("str            = %s\n"
+           "start index    = %ld\n"
+           "finish index   = %ld\n"
+           "step           = %d\n"
+           "expected index = %ld\n"
+           "result index   = %ld\n",
+           test->str,
+           test->start  - test->str,
+           test->finish - test->str,
+           test->step,
+           test->expected - test->str,
+           test->result - test->str);
 }
 
-void strchr_test(const char *str, int ch) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+//compare_lines_lex-def--------------------------------------------------------
 
-    const char *std_res = strchr(str, ch);
-    const char *my_res  = my_strchr(str, ch);
-    if (my_res != std_res) {
-        RED(printf("Failed\n");)
-        printf("String: %s\n"
-               "Char: %c\n"
-               "Std func result: %c\n"
-               "My func result: %c\n", str, ch, *std_res, *my_res);
-    } else {
-        GREEN(printf("Ok\n"););
-    }
+size_t get_one_test_compare_lines_lex(void *voidptr_test, const char *buffer) {
+    CompareLinesLexArgs *test = (CompareLinesLexArgs*) voidptr_test;
+ 
+    int bytes_read = 0;
+    int result = sscanf(buffer,
+                        "%s %s %d %d %d %d %n",
+                        test->str1,
+                        test->str2,
+                        &test->expected_default,
+                        &test->expected_skip_non_letters,
+                        &test->expected_neglect_case,
+                        &test->expected_reverse_order,
+                        &bytes_read);
+    ASSERT(result == 6 || result == EOF, "cannot read all arguments");
+    if (result == EOF) return 0;
+
+    return (size_t) bytes_read;
 }
 
-void count_char_str_test(const char *str, char ch, size_t expected) {
-    static int nTest = 1;
-    YELLOW(printf("Test # %d: ", nTest++);)
+int run_one_test_compare_lines_lex(void *voidptr_test) {
+    CompareLinesLexArgs *test = (CompareLinesLexArgs*) voidptr_test;
 
-    size_t result = count_char_str(str, ch);
-    if (result != expected) {
-        RED(printf("Failed\n");)
-        printf("String: %s\n"
-               "Char: %c\n"
-               "Expected result: %lu\n"
-               "Func result:     %lu\n",
-               str, ch, expected, result);
-    } else {
-        GREEN(printf("Ok\n");)
-    }
+    char *left1  = test->str1;
+    char *left2  = test->str2;
+    char *right1 = strchr(test->str1, '\0');
+    char *right2 = strchr(test->str2, '\0');
+    test->result_default          = compare_lines_lexicographic(left1, right1, left2, right2, 0, 0);
+    test->result_skip_non_letters = compare_lines_lexicographic(left1, right1, left2, right2, 1, 0);
+    test->result_neglect_case     = compare_lines_lexicographic(left1, right1, left2, right2, 0, 1);
+    test->result_reverse_order    = compare_lines_lexicographic(right1 - 1, left1 - 1, right2 - 1, left2 - 1, 0, 0);
+    test->result_default          = (test->result_default <  0) ? -1 :
+                                    (test->result_default == 0) ?  0 : 1;
+    test->result_skip_non_letters = (test->result_skip_non_letters <  0) ? -1 :
+                                    (test->result_skip_non_letters == 0) ?  0 : 1;
+    test->result_neglect_case     = (test->result_neglect_case <  0) ? -1 :
+                                    (test->result_neglect_case == 0) ?  0 : 1;
+    test->result_reverse_order    = (test->result_reverse_order <  0) ? -1 :
+                                    (test->result_reverse_order == 0) ?  0 : 1;
+
+    return (test->expected_default          == test->result_default)          &&
+           (test->expected_skip_non_letters == test->result_skip_non_letters) &&
+           (test->expected_neglect_case     == test->result_neglect_case)     &&
+           (test->expected_reverse_order    == test->result_reverse_order);
 }
 
-void puts_ut() {
-    puts_test("");
-    puts_test("a");
-    puts_test("abc");
+void failed_test_report_compare_lines_lex(const void *voidptr_test) {
+    const CompareLinesLexArgs *test = (const CompareLinesLexArgs*) voidptr_test;
+
+    printf("str1                      = %s\n"
+           "str2                      = %s\n"
+           "expected default          = %2d\n"
+           "result   default          = %2d\n\n"
+           "expected skip non-letters = %2d\n"
+           "result   skip non-letters = %2d\n\n"
+           "expected neglect case     = %2d\n"
+           "result   neglect case     = %2d\n\n"
+           "expected reverse order    = %2d\n"
+           "result   reverse order    = %2d\n",
+           test->str1,
+           test->str2,
+           test->expected_default,
+           test->result_default,
+
+           test->expected_skip_non_letters,
+           test->result_skip_non_letters,
+           
+           test->expected_neglect_case,
+           test->result_neglect_case,
+           
+           test->expected_reverse_order,
+           test->result_reverse_order);
 }
 
-void strlen_ut() {
-    strlen_test("");
-    strlen_test("a");
-    strlen_test("abc");
-}
-
-void strcpy_ut() {
-    strcpy_test("");
-    strcpy_test("a");
-    strcpy_test("abc");
-}
-
-void strncpy_ut() {
-    strncpy_test(""   , 1);
-    strncpy_test("a"  , 1);
-    strncpy_test("abc", 2);
-}
-
-void strcat_ut() {
-    strcat_test("" , "");
-    strcat_test("" , "a");
-    strcat_test("a", "");
-    strcat_test("a", "b");
-}
-
-void strncat_ut() {
-    strncat_test(""   , ""   , 1);
-    strncat_test(""   , "a"  , 1);
-    strncat_test("a"  , ""   , 1);
-    strncat_test("a"  , "b"  , 1);
-    strncat_test("abc", "123", 2);
-}
-
-void fgets_ut() {
-    fgets_test();
-}
-
-void strdup_ut() {
-    strdup_test("");
-    strdup_test("a");
-    strdup_test("abc");
-}
-
-void strchr_ut() {
-    strchr_test(""   , '\0');
-    strchr_test(""   , 'a');
-    strchr_test("abc", 'b');
-    strchr_test("abc", 'd');
-}
-
-void count_char_str_ut() {
-    count_char_str_test(""   , 'a' , 0);
-    count_char_str_test(""   , '\0', 1);
-    count_char_str_test("a"  , 'a' , 1);
-    count_char_str_test("a"  , '\0', 1);
-    count_char_str_test("aa" , 'a' , 2);
-    count_char_str_test("aaa", 'a' , 3);
-    count_char_str_test("a a", 'a' , 2);
-    count_char_str_test("aba", 'a' , 2);
-}
+#include "../../error_handling/undef_error_handling.h"

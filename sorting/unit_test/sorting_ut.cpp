@@ -8,9 +8,9 @@
 
 #include "../../error_handling/error_handling.h"
 
-//swap-dec---------------------------------------------------------------------
+//swap-dec----------------------------------------------------------------------
 
-const size_t MAXLEN_SWAP = 20;
+const size_t MAXLEN_SWAP = 40;
 struct SwapArgs {
     size_t size = 0;
     char a     [MAXLEN_SWAP] = {};
@@ -19,11 +19,11 @@ struct SwapArgs {
     char b_swap[MAXLEN_SWAP] = {};
 };
 
-size_t       get_one_test_swap(      void *voidptr_test, const char *buffer);
-int          run_one_test_swap(      void *voidptr_test);
-void   failed_test_report_swap(const void *voidptr_test);
+size_t     get_one_test_swap(      void *voidptr_test, const char *buffer);
+int        run_one_test_swap(      void *voidptr_test);
+void failed_test_report_swap(const void *voidptr_test);
 
-//reverse-dec------------------------------------------------------------------
+//reverse-dec-------------------------------------------------------------------
 
 const size_t MAXLEN_REVERSE = 20;
 struct ReverseArgs {
@@ -34,9 +34,9 @@ struct ReverseArgs {
     char result  [MAXLEN_REVERSE] = {};
 };
 
-size_t       get_one_test_reverse(      void *voidptr_test, const char *buffer);
-int          run_one_test_reverse(      void *voidptr_test);
-void   failed_test_report_reverse(const void *voidptr_test);
+size_t     get_one_test_reverse(      void *voidptr_test, const char *buffer);
+int        run_one_test_reverse(      void *voidptr_test);
+void failed_test_report_reverse(const void *voidptr_test);
 
 //sorting-dec-------------------------------------------------------------------
 
@@ -49,15 +49,21 @@ struct SortingArgs {
     char result  [MAXLEN_SORTING] = {};
 };
 
-size_t       get_one_test_sorting(      void *voidptr_test, const char *buffer);
-int          comp_char           (const void *a,            const void *b);
-int          run_one_test_sorting(      void *voidptr_test, void (*sorting)(void*,
-                                                                            size_t,
-                                                                            size_t,
-                                                                            int (*)(const void*, const void*)));
-int          run_one_test_bubble (      void *voidptr_test);
-int          run_one_test_quick  (      void *voidptr_test);
-void   failed_test_report_sorting(const void *voidptr_test);
+size_t get_one_test_sorting(void  *voidptr_test, const char *buffer);
+int    run_one_test_sorting(void  *voidptr_test, 
+                            void (*sorting)(void*,
+                                           size_t,
+                                           size_t,
+                                           int (*comp)(const void *a,
+                                                       const void *b)));
+
+int comp_char(const void *a,  const void *b);
+
+int  run_one_test_bubble       (      void *voidptr_test);
+int  run_one_test_quick        (      void *voidptr_test);
+void failed_test_report_sorting(const void *voidptr_test);
+
+//------------------------------------------------------------------------------
 
 int main() {
     unit_test("swap",
@@ -91,7 +97,7 @@ int main() {
     return 0;
 }
 
-//swap-def------------------------------------------------------------------------
+//swap-def----------------------------------------------------------------------
 
 size_t get_one_test_swap(void *voidptr_test, const char *buffer) {
     SwapArgs *test = (SwapArgs*) voidptr_test;
@@ -134,7 +140,7 @@ void failed_test_report_swap(const void *voidptr_test) {
            test->b_swap);
 }
 
-//reverse-def------------------------------------------------------------------
+//reverse-def-------------------------------------------------------------------
 
 size_t get_one_test_reverse(void *voidptr_test, const char *buffer) {
     ReverseArgs *test = (ReverseArgs*) voidptr_test;

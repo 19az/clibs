@@ -1,119 +1,113 @@
+
 #include <stdio.h>
 
 #include "line.h"
-#include "../assert/my_assert.h"
 #include "../strings/strings.h"
 #include "../symbols/symbols.h"
 
-void print_line_stdout(const Line *line) {
-    ASSERT(line != NULL)
+#include "../error_handling/error_handling.h"
 
-    for (size_t i = 0; i < line->length; i++) {
-        putchar(line->start[i]);
-    }
+struct Line {
+    const char *start = NULL;
+    size_t len = 0;
+};
+
+void set_line(Line *line, const char *start) {
+    ASSERT(line != NULL);
+    
+    line->start = start;
+    line->len = (size_t) (my_strchr(line->start, '\n') - line->start);
+}
+
+void print_line_stdout(const Line *line) {
+    ASSERT(line != NULL);
+
+    const char *ptr = line->start;
+    while (*ptr != '\n') putchar(*ptr++);
     putchar('\n');
 }
 
-size_t get_line_len(Line *line) {
-    ASSERT(line != NULL)
-
-    line->length = (size_t) (my_strchr(line->start, '\n') - line->start);
-    return line->length;
-}
-
 int compare_lines_length(const void *ptr1, const void *ptr2) {
-    ASSERT(ptr1 != NULL)
-    ASSERT(ptr2 != NULL)
+    ASSERT(ptr1 != NULL);
+    ASSERT(ptr2 != NULL);
     if (ptr1 == ptr2)
         return 0;
 
-    Line *lineptr1 = cast_void_to_lineptr(ptr1);
-    Line *lineptr2 = cast_void_to_lineptr(ptr2);
-    if (lineptr1->length > lineptr2->length) return 1;
-    if (lineptr1->length < lineptr2->length) return -1;
+    size_t size1 = ((const Line*) ptr1)->len;
+    size_t size2 = ((const Line*) ptr2)->len;
+    if (size1 > size2) return 1;
+    if (size1 < size2) return -1;
     return 0;
 }
 
-Line *cast_void_to_lineptr(const void *ptr) {
-    ASSERT(ptr != NULL)
-
-    Line *lineptr = NULL;
-    unsigned char *uchlineptr = (unsigned char*) &lineptr;
-    const unsigned char *uchptr = (const unsigned char*) ptr;
-    for (size_t i = 0; i < sizeof(Line*); i++) {
-        uchlineptr[i] = uchptr[i];
-    }
-    return lineptr;
-}
-
 int compare_lines_lexicographic(const void *ptr1, const void *ptr2) {
-    ASSERT(ptr1 != NULL)
-    ASSERT(ptr2 != NULL)
+    ASSERT(ptr1 != NULL);
+    ASSERT(ptr2 != NULL);
     if (ptr1 == ptr2) 
         return 0;
 
-    Line *lineptr1 = cast_void_to_lineptr(ptr1);
-    Line *lineptr2 = cast_void_to_lineptr(ptr2);
-    const char *str1 = lineptr1->start;
-    const char *str2 = lineptr2->start;
-    size_t len1 = lineptr1->length;
-    size_t len2 = lineptr2->length;
-    size_t index1 = 0;
-    size_t index2 = 0;
-    while (index1 < len1 && index2 < len2) {
-        index1 += skip_no_letters(str1 + index1, len1 - index1);
-        index2 += skip_no_letters(str2 + index2, len2 - index2);
-        if (index1 == len1 || index2 == len2) break;
+    const Line *line1  = (const Line*) ptr1;
+    const Line *line2  = (const Line*) ptr2;
+    const char *left1  = line1->start;
+    const char *left2  = line2->start;
+    const char *right1 = left1 + line1->len;
+    const char *right2 = left2 + line2->len;
+    while (1) {
+        left1 = skip_no_letters(left1, right1, 1);
+        left2 = skip_no_letters(left2, right2, 1);
+        if (left1 == right1 || left2 == right2) break;
 
-        if (upper_case(str1[index1]) != upper_case(str2[index2])) break;
-        index1++;
-        index2++;
+        if (upper_case(*left1) != upper_case(*left2) break;
+        left1++;
+        left2++;
     } 
 
-    if (index1 == len1) {
-        return (index2 == len2) ? 0 : -1;
+    if (left1 == right1) {
+        return (left2 == right2) ? 0 : -1;
     } else {
-        if (index2 == len2) {
+        if (left2 == right2) {
             return 1;
         } else {
-            if (upper_case(str1[index1]) > upper_case(str2[index2])) return 1;
-            if (upper_case(str1[index1]) < upper_case(str2[index2])) return -1;
+            if (upper_case(left1) > upper_case(left2) return 1;
+            if (upper_case(left1) < upper_case(left2) return -1;
             return 0;
         }
     }
 }
 
 int compare_lines_reverse_lexicographic(const void *ptr1, const void *ptr2) {
-    ASSERT(ptr1 != NULL)
-    ASSERT(ptr2 != NULL)
+    ASSERT(ptr1 != NULL);
+    ASSERT(ptr2 != NULL);
     if (ptr1 == ptr2) 
         return 0;
 
-    Line *lineptr1 = cast_void_to_lineptr(ptr1);
-    Line *lineptr2 = cast_void_to_lineptr(ptr2);
-    const char *str1 = lineptr1->start;
-    const char *str2 = lineptr2->start;
-    size_t len1 = lineptr1->length;
-    size_t len2 = lineptr2->length;
-    while (len1 > 0 && len2 > 0) {
-        len1 = skip_no_letters_reverse(str1, len1);
-        len2 = skip_no_letters_reverse(str2, len2);
-        if (len1 == 0 || len2 == 0) break;
+    Line *line1 = (const Line*) ptr1;
+    Line *line2 = (const Line*) ptr2;
+    const char *left1  = line1->start - 1;
+    const char *left2  = line2->start - 1;
+    const char *right1 = left1 + line1->len - 1;
+    const char *right2 = left2 + line2->len - 1;
+    while (1) {
+        right1 = skip_no_letters_reverse(right1, left1, -1);
+        right2 = skip_no_letters_reverse(right2, left2, -1);
+        if (right1 == left1 || right2 == left2) break;
 
-        if (upper_case(str1[len1 - 1]) != upper_case(str2[len2 - 1])) break;
-        len1--;
-        len2--;
+        if (upper_case(left1) != upper_case(right2)) break;
+        right1--;
+        right2--;
     } 
 
-    if (len1 == 0) {
-        return (len2 == 0) ? 0 : -1;
+    if (right1 == left1) {
+        return (right2 == left2) ? 0 : -1;
     } else {
-        if (len2 == 0) {
+        if (right2 == left2) {
             return 1;
         } else {
-            if (upper_case(str1[len1 - 1]) > upper_case(str2[len2 - 1])) return 1;
-            if (upper_case(str1[len1 - 1]) < upper_case(str2[len2 - 1])) return -1;
+            if (upper_case(right1) > upper_case(right2)) return 1;
+            if (upper_case(right1) < upper_case(right2)) return -1;
             return 0;
         }
     }
 }
+
+#include "../error_handling/undef_error_handling.h"

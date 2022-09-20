@@ -1,10 +1,9 @@
 CC = g++
 include debugflags
-EXE = strings_ut
-SOURCES = strings_ut.cpp
-INCLUDES_DIR = ../..
-include $(INCLUDES_DIR)/strings/Makefile
-include $(INCLUDES_DIR)/unit_testing/Makefile
+EXE = stdlike_strings_ut
+SOURCES = stdlike_strings_ut.cpp
+INCLUDES_DIR = ../../..
+include $(INCLUDES_DIR)/strings/stdlike/Makefile
 
 OBJECTS = $(SOURCES:.cpp=.o)
 
