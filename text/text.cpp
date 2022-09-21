@@ -1,4 +1,3 @@
-#include <stdlib.h>
 
 #include "text.h"
 #include "../assert/my_assert.h"
@@ -6,52 +5,58 @@
 #include "../sorting/sorting.h"
 #include "../strings/strings.h"
 
-int read_text_file(Text *text, const char *filename) {
-    ASSERT(text != NULL)
-    ASSERT(filename != NULL)
+#include "../error_handling/error_handling.h"
+
+void read_text_file(Text *text, const char *filename ERR_SUPPORT_DEFN) {
+    ASSERT(text     != NULL);
+    ASSERT(filename != NULL);
     
-    int file_size = get_file_size(filename);
-    if (file_size == -1) {
-        return ERR_FILE_SIZE_TEXT;
-    } else if (file_size == 0) {
-        return ERR_FILE_EMPTY_TEXT;
+    int err_get_file_size = 0;
+    size_t file_size = get_file_size(filename, &err_get_file_size);
+    if (file_size == 0 ERR_HANDLED(ERR_FILE_EMPT_TEXT, "empty file"))
+        return;
+    if (err_get_file_size != 0) {
+        err_get_file_size & ERR_FILE_STAT_RWFILE
+            ERR_HANDLED(ERR_FILE_STAT_TEXT, "cannot get file stat");
+        err_get_file_size & ERR_FILE_SIZE_RWFILE
+            ERR_HANDLED(ERR_FILE_SIZE_TEXT, "cannot get file size");
+        return;
     }
     
     char *buffer = (char*) calloc((size_t) file_size + 2, sizeof(char));
-    if (buffer == NULL) {
-        return ERR_MEM_ALLOC_TEXT;
-    }
+    if (buffer == NULL ERR_HANDLED(ERR_MEM_ALLOC_TEXT, "cannot calloc"))
+        return;
 
-    int rf_ret = read_file(filename, buffer, (size_t) file_size);
-    if (rf_ret == -1) {
+    int err_read_file = 0;
+    size_t read_bytes = read_file(filename, buffer, (size_t) file_size, &err_read_file);
+    if (err_read_file != 0) {
+        err_read_file & ERR_FILE_OPEN_RWFILE
+            ERR_HANDLED(ERR_FILE_OPEN_TEXT, "cannot open file");
+        err_read_file & ERR_FILE_READ_RWFILE
+            ERR_HANDLED(ERR_FILE_READ_TEXT, "cannot read file");
+        err_read_file & ERR_FILE_CLOSE_RWFILE
+            ERR_HANDLED(ERR_FILE_CLOS_TEXT, "cannot close file");
         free(buffer);
-        return ERR_FILE_OPEN_TEXT;
-    } else if (rf_ret == 0) {
-        free(buffer);
-        return ERR_FILE_READ_TEXT;
+        return;
     }
-    buffer[rf_ret] = '\n';
+    buffer[read_bytes] = '\n';
     text->buffer = buffer;
-    text->nSymbols = (size_t) rf_ret + 1;
-
-    return rf_ret;
 }
 
-int parse_lines_text(Text *text) {
+void parse_lines_text(Text *text) {
     ASSERT(text != NULL)
     
-    size_t nLines = count_char_str(text->buffer, '\n');
-    if (nLines == 0)
+    size_t n_parts = count_char_str(text->buffer, '\n');
+    if (n_parts == 0)
         return 0;
 
-    Line **lines = (Line**) calloc(nLines, sizeof(Line*));
-    if (lines == NULL) {
-        return ERR_MEM_ALLOC_TEXT;
-    }
+    void *parts = calloc(n_parts, text->part->size);
+    if (parts == NULL ERR_HANDLED(ERR_MEM_ALLOC_TEXT, "cannot calloc"))
+        return;
 
     char *line_ptr = text->buffer;
-    for (size_t i = 0; i < nLines; i++) {
-        lines[i] = (Line*) malloc(sizeof(Line));
+    for (size_t i = 0; i < n_parts; i++) {
+       // alloc 
         if (lines[i] == NULL) {
             for (size_t j = 0; j < i; j++) {
                 free(lines[j]);
@@ -71,71 +76,17 @@ int parse_lines_text(Text *text) {
 void print_all_lines_stdout(const Text *text) {
     ASSERT(text != NULL)
     
-    size_t nLines = text->nLines;
-    Line **lines = text->lines;
-    for (size_t i = 0; i < nLines; ++i) {
-        print_line_stdout(lines[i]);
+    size_t n_parts = text->n_parts;
+    uint8_t *lines = (uint8_t*) text->parts;
+    for (size_t i = 0; i < n_parts; ++i) {
+        text->part->print_line_stdout(lines + i * text->part->size);
     }
 }
 
 void reverse_order_lines(Text *text) {
     ASSERT(text != NULL)
 
-    reverse_order(text->lines, text->nLines, sizeof(Line*));
-}
-
-void sort_lines_length_bubble_sort(Text *text) {
-    ASSERT(text != NULL)
-
-    bubble_sort(text->lines,
-                text->nLines,
-                sizeof(Line*),
-                compare_lines_length);
-}
-
-void sort_lines_length_quick_sort(Text *text) {
-    ASSERT(text != NULL)
-
-    quick_sort(text->lines,
-               text->nLines,
-               sizeof(Line*),
-               compare_lines_length);
-}
-
-void sort_lines_lexicographic_bubble_sort(Text *text) {
-    ASSERT(text != NULL)
-
-    bubble_sort(text->lines,
-                text->nLines,
-                sizeof(Line*),
-                compare_lines_lexicographic);
-}
-
-void sort_lines_lexicographic_quick_sort(Text *text) {
-    ASSERT(text != NULL)
-
-    quick_sort(text->lines,
-               text->nLines,
-               sizeof(Line*),
-               compare_lines_lexicographic);
-}
-
-void sort_lines_reverse_lexicographic_bubble_sort(Text *text) {
-    ASSERT(text != NULL)
-
-    bubble_sort(text->lines,
-                text->nLines,
-                sizeof(Line*),
-                compare_lines_reverse_lexicographic);
-}
-
-void sort_lines_reverse_lexicographic_quick_sort(Text *text) {
-    ASSERT(text != NULL)
-
-    quick_sort(text->lines,
-               text->nLines,
-               sizeof(Line*),
-               compare_lines_reverse_lexicographic);
+    reverse_order(text->parts, text->n_parts, text->part->size);
 }
 
 void dealloc_struct_text(Text *text) {
@@ -157,3 +108,5 @@ void dealloc_struct_text(Text *text) {
         lines = NULL;
     }
 }
+
+#include "../error_handling/undef_error_handling.h"

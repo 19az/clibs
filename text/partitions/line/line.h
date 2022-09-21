@@ -1,20 +1,33 @@
 #ifndef LINE_H
 #define LINE_H
 
+/// @file line.h
+
+struct Line {
+    const char *start = NULL;
+    size_t len = 0;
+};
+
+/// @brief Counts number of lines in given buffer
+///
+/// @param[in] buffer buffer to count lines
+///
+/// @return number of lines in the buffer
+size_t get_n_lines(const char *buffer);
+
 /// @brief Reads 1 line from stdin
 ///
 /// @param line pointer to the Line
 /// @param start pointer to the start of the line
 ///
 /// @return number of read symbols
-size_t set_line(Line *line, const char *start);
+size_t set_line(void *voidptr_line, const char *start);
 
-/// @file line.h
-
-/// @brief Prints 1 line in stdout
+/// @brief Prints 1 line in stream
 ///
 /// @param[in] pointer to the Line
-void print_line_stdout(Line *line);
+/// @param[in] stream stream to print
+void print_line_stream(FILE *stream, const void *voidptr_line);
 
 /// @brief Compares two Lines by length
 ///
@@ -36,7 +49,7 @@ int compare_lines_length(const void *ptr1, const void *ptr2);
 /// is lexicographically greater than 2nd,
 /// 0 if lines are equal,
 /// a negative number if 2nd line is larger,
-int compare_lines_lexicographic(const void *ptr1, const void *ptr2);
+int compare_lines_lex(const void *ptr1, const void *ptr2);
 
 /// @brief Compares two reversed Lines lexicographically
 ///
@@ -47,6 +60,6 @@ int compare_lines_lexicographic(const void *ptr1, const void *ptr2);
 /// is lexicographically greater than 2nd,
 /// 0 if lines are equal,
 /// a negative number if 2nd reversed line is larger,
-int compare_lines_reverse_lexicographic(const void *ptr1, const void *ptr2);
+int compare_lines_reverse_lex(const void *ptr1, const void *ptr2);
 
 #endif /* LINE_H */

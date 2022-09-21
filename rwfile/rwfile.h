@@ -1,20 +1,12 @@
 #ifndef RWFILE_H
 #define RWFILE_H
-#define HEADER
-
-#include "../error_handling/error_handling.h"
-
-/// Return codes for rwfile lib
-enum errcodes_rwfile
-{
-ERR_FILE_STAT_RWFILE  = 1,      ///< error during getting file stat
-ERR_FILE_SIZE_RWFILE  = 1 << 1, ///< bad file size
-ERR_FILE_OPEN_RWFILE  = 1 << 2, ///< error during openning file
-ERR_FILE_READ_RWFILE  = 1 << 3, ///< error during reading file
-ERR_FILE_CLOSE_RWFILE = 1 << 4  ///< error during closing file
-};
 
 /// @file rwfile.h
+/// @brief Functions for input/output files
+
+#include "rwfile_errors.h"
+#define ERR_TYPE ERR_TYPE_RWFILE
+#include "../error_handling/error_handling.h"
 
 /// @brief Gets file size in bytes
 ///
@@ -27,26 +19,31 @@ ERR_FILE_CLOSE_RWFILE = 1 << 4  ///< error during closing file
 /// ERR_FILE_SIZE_RWFILE
 ///
 /// @see ERR_SUPPORT, ASSERT, ERR_HANDLED
-size_t get_file_size(const char *filename ERR_SUPPORT);
+size_t get_file_size(const char *filename ERR_SUPPORT_DECL);
 
-/// @brief Reads text from file into buffer
+/// @brief Reads whole from file into buffer
 ///
 /// @param[in] filename name of file which read from
-/// @param[out] buffer buffer where text store to
-/// @param[in] size  size of each object to read
-/// @param[in] count number of objects to read
+/// @param[in] size size of each object to read
 ///
-/// @return number of read bytes
+/// @return buffer in dynamic memory with data from file
 ///
 /// @note uses ERR_SUPPORT, possible errors:
+/// ERR_FILE_STAT_RWFILE,
+/// ERR_FILE_SIZE_RWFILE,
 /// ERR_FILE_OPEN_RWFILE,
 /// ERR_FILE_READ_RWFILE,
-/// ERR_FILE_CLOSE_RWFILE
+/// ERR_FILE_CLOS_RWFILE,
+/// ERR_MEM_ALLOC_RWFILE
+///
+/// @note adds 0 element to the end of buffer
 ///
 /// @see ERR_SUPPORT, ASSERT, ERR_HANDLED
-size_t read_file(const char *filename, char *buffer, size_t size, size_t count ERR_SUPPORT);
+void *read_whole_file(const char *filename, size_t size ERR_SUPPORT_DECL);
 
 #include "../error_handling/undef_error_handling.h"
+#ifndef ERR_TYPE_RWFILE_CPP
+    #undef ERR_TYPE
+#endif
 
-#undef HEADER
 #endif /* RWFILE_H */

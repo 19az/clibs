@@ -6,4 +6,7 @@ abc    2 -1 -2 2
 123abc 0  6  2 4
 abc123 5 -1 -1 2
 abc123 5 -1 -2 1
- 
+empty  0  0  1 0
+empty  0  0  2 0
+empty  0  0 -1 0
+empty  0  0 -2 0

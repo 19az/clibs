@@ -37,9 +37,12 @@ int main() {
     switch (nTest) {
         case 1:  unit_test(func_name, tests_filename, sizeof(int), get_one_test_buf, run_test, failed_test_report);
                  break;
-        case 2:  report(results, 0);
+        case 2:  unit_test(func_name, "does_not_exist", sizeof(int), get_one_test_buf, run_test, failed_test_report);
                  break;
-        case 3:  report(results, results_len);
+        case 3:  report(results, 0);
+                 break;
+        case 4:  report(results, results_len);
+                 break;
         default: break;
     }
 

@@ -6,6 +6,17 @@
 #define GET_ARG_5(a,b,c,d,e,...) e
 #define GET_ARG_6(a,b,c,d,e,f,...) f
 
+#define MULTI_CHAR_CONST_8(a,b,c,d,e,f,g,h)     \
+        ((((unsigned long long)                 \
+        MULTI_CHAR_CONST_4(e,f,g,h)) << 32) |   \
+        MULTI_CHAR_CONST_4(a,b,c,d))
+
+#define MULTI_CHAR_CONST_4(a,b,c,d)            \
+      ((MULTI_CHAR_CONST_2(c,d) << 16) |       \
+        MULTI_CHAR_CONST_2(a,b))
+
+#define MULTI_CHAR_CONST_2(a,b) ((b << 8) | a)
+
 #define EMPTY()
 
 #define EVAL(...)     EVAL1024(        __VA_ARGS__)

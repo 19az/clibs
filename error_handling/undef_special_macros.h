@@ -6,6 +6,10 @@
 #undef GET_ARG_5
 #undef GET_ARG_6
 
+#undef MULTI_CHAR_CONST_8
+#undef MULTI_CHAR_CONST_4
+#undef MULTI_CHAR_CONST_2
+
 #undef EMPTY
 
 #undef EVAL

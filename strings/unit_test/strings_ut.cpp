@@ -91,6 +91,11 @@ int main() {
     return 0;
 }
 
+#define IS_STRING_EMPTY(str) \
+if (!strcmp(str, "empty")) { \
+    strcpy(str, "");         \
+}
+
 //count_char_str-def----------------------------------------------------------
 
 size_t get_one_test_count_char_str(void *voidptr_test, const char *buffer) {
@@ -104,6 +109,10 @@ size_t get_one_test_count_char_str(void *voidptr_test, const char *buffer) {
                         &bytes_read);
     ASSERT(result == 3 || result == EOF, "cannot read all arguments");
     if (result == EOF) return 0;
+
+    IS_STRING_EMPTY(test->str);
+    if (test->counting_char == '0')
+        test->counting_char = '\0';
 
     return (size_t) bytes_read;
 }
@@ -149,9 +158,11 @@ size_t get_one_test_skip_non_letters(void *voidptr_test, const char *buffer) {
     ASSERT(result == 5 || result == EOF, "cannot read all arguments");
     if (result == EOF) return 0;
 
+    IS_STRING_EMPTY(test->str);
     test->start    = test->str + start_index;
     test->finish   = test->str + finish_index;
     test->expected = test->str + expected_index;
+
     return (size_t) bytes_read;
 }
 
@@ -196,6 +207,8 @@ size_t get_one_test_compare_lines_lex(void *voidptr_test, const char *buffer) {
                         &bytes_read);
     ASSERT(result == 6 || result == EOF, "cannot read all arguments");
     if (result == EOF) return 0;
+
+    EVAL(MAP(IS_STRING_EMPTY, test->str1, test->str2))
 
     return (size_t) bytes_read;
 }
@@ -253,5 +266,7 @@ void failed_test_report_compare_lines_lex(const void *voidptr_test) {
            test->expected_reverse_order,
            test->result_reverse_order);
 }
+
+#undef IS_STRING_EMPTY
 
 #include "../../error_handling/undef_error_handling.h"

@@ -1,3 +1,4 @@
 1<[0;33mUnit test for func test_func is started\n[0m[0;33mTest #   1: [0m[1;31mFailed\n[0m[1;31mresult = 38\nans = 42\n[0m[0;33mTest #   2: [0m[1;31mFailed\n[0m[1;31mresult = 39\nans = 42\n[0m[0;33mTest #   3: [0m[1;31mFailed\n[0m[1;31mresult = 40\nans = 42\n[0m[0;33mTest #   4: [0m[1;31mFailed\n[0m[1;31mresult = 41\nans = 42\n[0m[0;33mTest #   5: [0m[0;32mOk\n[0m[0;33mTest #   6: [0m[1;31mFailed\n[0m[1;31mresult = 43\nans = 42\n[0m[0;33mTest #   7: [0m[1;31mFailed\n[0m[1;31mresult = 44\nans = 42\n[0m[1;31mFailed test numbers are: [0m[1;31m1 [0m[1;31m2 [0m[1;31m3 [0m[1;31m4 [0m[1;31m6 [0m[1;31m7 [0m\n[0;33mUnit test is over\n\n[0m\n
 2<
-3<[1;31mFailed test numbers are: [0m[1;31m2 [0m[1;31m4 [0m
+3<
+4<[1;31mFailed test numbers are: [0m[1;31m2 [0m[1;31m4 [0m

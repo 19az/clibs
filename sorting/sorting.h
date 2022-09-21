@@ -1,6 +1,5 @@
 #ifndef SORTING_H
 #define SORTING_H
-#define HEADER
 
 #include <stdlib.h>
 
@@ -83,5 +82,4 @@ void quick_sort(void    *ptr,
                 size_t   size,
                 int    (*comp)(const void*, const void*));
 
-#undef HEADER
 #endif /* ENDIF */

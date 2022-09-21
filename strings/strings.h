@@ -1,6 +1,5 @@
 #ifndef STRINGS_H
 #define STRINGS_H
-#define HEADER
 
 /// @file strings.h
 
@@ -49,5 +48,4 @@ int compare_lines_lexicographic(const char *start1,
                                 int is_skip_non_letters = 0,
                                 int is_neglect_case     = 0);
 
-#undef HEADER
 #endif /* STRINGS_H */

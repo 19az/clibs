@@ -1,5 +1,8 @@
-a    a   1
-a    b   0
-aa   a   2
-aaa  a   3
-aca  a   2
+a       a   1
+a       b   0
+a       0   1
+aa      a   2
+aaa     a   3
+aca     a   2
+empty   a   0
+empty   0   1
