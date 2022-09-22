@@ -25,9 +25,14 @@ size_t get_file_size(const char *filename ERR_SUPPORT_DEFN) {
     return (size_t) st.st_size;
 }
 
-void *read_whole_file(const char *filename, size_t size ERR_SUPPORT_DEFN) {
+void *read_whole_file(const char   *filename,
+                            size_t  size,
+                            size_t *count /* = NULL  */
+                            ERR_SUPPORT_DEFN) {
     ASSERT(filename != NULL);
     ASSERT(size     != 0);
+    
+    (count) ? *count = 0 : 0;
 
     ERR_TYPE_RWFILE err_get_file_size = 0;
     size_t file_size = get_file_size(filename, &err_get_file_size);
@@ -48,7 +53,9 @@ void *read_whole_file(const char *filename, size_t size ERR_SUPPORT_DEFN) {
                             CODE_FROM_ERR_RWFILE))
         return NULL;
 
-    fread(buffer, 1, file_size, file) < file_size
+    size_t read_bytes = fread(buffer, 1, file_size, file);
+    (count) ? *count = read_bytes : 0;
+    read_bytes < file_size
         ERR_HANDLED_CODE(ERR_FILE_READ_RWFILE,
                          CODE_FROM_ERR_RWFILE);
 

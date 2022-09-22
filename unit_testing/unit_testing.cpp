@@ -20,7 +20,10 @@ void unit_test(const char *func_name,
     ASSERT(failed_test_report != NULL);
 
     ERR_TYPE_RWFILE err_read_whole_file = 0;
-    char *buffer = (char*) read_whole_file(tests_filename, sizeof(char), &err_read_whole_file);
+    char *buffer = (char*) read_whole_file(tests_filename,
+                                                 sizeof(char),
+                                                 NULL,
+                                                 &err_read_whole_file);
     if (ERR_CHECK_CODE(err_read_whole_file, 
                        CODE_FROM_ERR_RWFILE))
         return;
@@ -34,10 +37,9 @@ void unit_test(const char *func_name,
         return;
     }
 
-    size_t bytes_read_buf = 0;
     char *buffer_ptr = buffer;
-    for (size_t i = 0; (bytes_read_buf = get_one_test_buf(tests + size * i, buffer_ptr)) > 0; i++) {
-        buffer_ptr += bytes_read_buf;
+    for (size_t test = 0; test < n_tests; test++) {
+        buffer_ptr += get_one_test_buf(tests + size * test, buffer_ptr);
     }
 
     YELLOW(printf("Unit test for func %s is started\n", func_name);)

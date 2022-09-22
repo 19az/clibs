@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include <stdint.h>
 
 #include "sorting.h"
 
@@ -73,9 +72,9 @@ void bubble_sort(void *ptr,
 
     uint8_t *uptr = (uint8_t*) ptr;
     for (size_t ascent = 0; ascent < count; ascent++) {
-        size_t nPairs = count - ascent - 1;
+        size_t n_pairs = count - ascent - 1;
 
-        for (size_t pair = 0; pair < nPairs; pair++) {
+        for (size_t pair = 0; pair < n_pairs; pair++) {
             uint8_t *pair_ptr1 = uptr      + size * pair;
             uint8_t *pair_ptr2 = pair_ptr1 + size;
 

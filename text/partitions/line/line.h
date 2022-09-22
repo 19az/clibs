@@ -13,7 +13,7 @@ struct Line {
 /// @param[in] buffer buffer to count lines
 ///
 /// @return number of lines in the buffer
-size_t get_n_lines(const char *buffer);
+size_t count_n_lines(const char *buffer);
 
 /// @brief Reads 1 line from stdin
 ///

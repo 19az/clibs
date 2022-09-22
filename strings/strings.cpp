@@ -29,8 +29,8 @@ int compare_lines_lexicographic(const char *start1,
                                 const char *finish1,
                                 const char *start2,
                                 const char *finish2,
-                                int is_skip_non_letters /* = 1 */,
-                                int is_neglect_case     /* = 1 */)
+                                int is_skip_non_letters /* = 0 */,
+                                int is_neglect_case     /* = 0 */)
 {
     ASSERT(start1  != NULL);
     ASSERT(start1  != NULL);
@@ -39,6 +39,7 @@ int compare_lines_lexicographic(const char *start1,
 
     int step1 = ((finish1 - start1) >= 0) ? 1 : -1;
     int step2 = ((finish2 - start2) >= 0) ? 1 : -1;
+
     while (start1 != finish1 && start2 != finish2) {
         if (is_skip_non_letters) {
             start1 = skip_non_letters(start1, finish1, step1);
@@ -54,7 +55,8 @@ int compare_lines_lexicographic(const char *start1,
             cur_letter1 = toupper(cur_letter1);
             cur_letter2 = toupper(cur_letter2);
         }
-        if (start1 == finish1 || start2 == finish2 ||
+        if (start1 == finish1 ||
+            start2 == finish2 ||
             cur_letter1 != cur_letter2) {
             break;
         }

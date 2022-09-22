@@ -1,6 +1,7 @@
 #ifndef SORTING_H
 #define SORTING_H
 
+#include <stdint.h>
 #include <stdlib.h>
 
 /// @file sorting.h

@@ -64,8 +64,13 @@ void read_file_ut() {
     YELLOW(printf("Unit test for read_file() started\n"););
     for (size_t i = 0; i < n_tests; i++) {
         YELLOW(printf("Test # %lu:\n", i + 1);)
-        char *buffer = (char*) read_whole_file(files[i], sizeof(char));
-        if ((buffer != NULL) == read_res[i]) {
+          
+        size_t bytes_read = 0;
+        char *buffer = (char*) read_whole_file(files[i],
+                                               sizeof(char),
+                                               &bytes_read);
+        if (((buffer != NULL) == read_res[i]) &&
+                  (bytes_read == filesize[i])) {
             if (buffer == NULL || strcmp(buffer, filedata[i]) == 0) {
                 GREEN(printf("OK\n");)
             } else {
@@ -79,8 +84,14 @@ void read_file_ut() {
             RED(printf("Failed\n");)
             printf("filename: %s\n"
                    "read result(exp): %d\n"
-                   "read result(res): %d\n",
-                   files[i], read_res[i], buffer != NULL);
+                   "read result(res): %d\n"
+                   "filesize:   %lu\n"
+                   "read bytes: %lu\n",
+                   files[i],
+                   read_res[i],
+                   buffer != NULL,
+                   filesize[i],
+                   bytes_read);
         }
 
         free(buffer);
