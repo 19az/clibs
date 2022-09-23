@@ -1,5 +1,5 @@
-a
-12
-a b
- a c
-defgh
+aN
+aNN
+NNaNN
+abcN123N
+abcdN12345NN

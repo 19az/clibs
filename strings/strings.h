@@ -5,16 +5,20 @@
 
 #include <stdlib.h>
 
-/// @brief Count occurences of char in str
+/// @brief Count occurences of chars in string
 ///
 /// @param[in] str null-terminated string
-/// @param[in] ch char to count
+/// @param[in] chs string of counting chars
+/// @param[in] skip_repeating determines if it is needed
+/// to skip symbols that places in a row in the string
+/// @param[in] count_null determines if it is needed
+/// to add null-symbol to counting symbols
 ///
 /// @return number of ch in text
 ///
 /// @note undefined behaviour if str is not
 /// a pointer to null-terminated byte string
-size_t count_char_str(const char *buffer, char ch);
+size_t count_chars_str(const char *str, const char *chs, char count_null = 0, char skip_repeating = 0);
 
 /// @brief Skips chars which are not letters in sequence of chars
 ///

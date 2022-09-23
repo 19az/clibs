@@ -9,19 +9,32 @@
 #include "../../../error_handling/error_handling.h"
 
 size_t count_n_lines(const char *buffer) {
-    return count_char_str(buffer, '\n');
+    ASSERT(buffer != NULL);
+
+    while (*buffer == '\n') buffer++;
+    return count_chars_str(buffer, "\n", 1, 1);
 }
 
-size_t set_line(void *voidptr_line, const char *start) {
-    ASSERT(voidptr_line != NULL);
-    ASSERT(start        != NULL);
+void *parse_buffer_lines(char *buffer, size_t *n_lines) {
+    ASSERT(buffer  != NULL);
+    ASSERT(n_lines != NULL);
+
+    *n_lines = count_n_lines(buffer);
+    ASSERT(*n_lines != 0);
     
-    Line *line = (Line*) voidptr_line;
-    line->start = start;
-    const char *end = strchr(start, '\n');
-    ASSERT(end != NULL);
-    line->len = (size_t) (end - start);
-    return line->len;
+    Line *lines = (Line*) calloc(*n_lines, sizeof(Line));
+    ASSERT(lines != NULL);
+
+    const char *delim = "\n";
+    char *saveptr = NULL;
+    char *start_line = strtok_r(buffer, delim, &saveptr);
+    for (size_t line = 0; line < *n_lines; line++) {
+        ASSERT(start_line != NULL);
+        lines[line] = {start_line, (size_t) (saveptr - start_line - 1)};
+        start_line = strtok_r(NULL, delim, &saveptr);
+    }
+
+    return lines;
 }
 
 void print_line_stream(FILE *stream, const void *voidptr_line) {
@@ -29,10 +42,8 @@ void print_line_stream(FILE *stream, const void *voidptr_line) {
     ASSERT(voidptr_line != NULL);
 
     const Line *line = (const Line*) voidptr_line;
-    for (size_t index = 0; index < line->len; index++) {
-        fputc(line->start[index], stream);
-    }
-    fputc('\n', stream);
+    ASSERT(line->start != NULL);
+    fprintf(stream, "%s\n", line->start);
 }
 
 int compare_lines_length(const void *ptr1, const void *ptr2) {

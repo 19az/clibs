@@ -2,16 +2,40 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "strings.h"
 #include "../error_handling/error_handling.h"
 
-size_t count_char_str(const char *str, char ch) {
+size_t count_chars_str(const char *str, const char *chs, char count_null /* = 0 */, char skip_repeating /* = 0 */) {
     ASSERT(str != NULL);
+    ASSERT(chs != NULL);
+    if (strlen(chs) == 0)
+        return 0;
+
     size_t count = 0;
-    do {
-        count += (*str == ch);
-    } while (*str++ != '\0');
+    int prev_matches = 0;
+    while (*str != '\0') {
+        int curr_matches = 0;
+
+        for (const char *ch = chs; *ch != '\0'; ch++) {
+            curr_matches = (*str == *ch);
+
+            if (skip_repeating) {
+                count += (size_t) (curr_matches && !prev_matches);
+            } else {
+                count += (size_t) curr_matches; 
+            }
+
+            if (curr_matches) break;
+        }
+        prev_matches = curr_matches;
+        str++;
+    }
+   
+    if (count_null)
+        count += !(skip_repeating && prev_matches);
+
     return count;
 }
 

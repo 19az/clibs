@@ -1,8 +1,14 @@
-a       a   1
-a       b   0
-a       0   1
-aa      a   2
-aaa     a   3
-aca     a   2
-empty   a   0
-empty   0   1
+a       a   1 1 1
+a       b   0 0 1
+aa      a   2 1 1
+aaa     a   3 1 1
+aca     a   2 2 2
+empty   a   0 0 1
+baa     a   2 1 1
+aabaa   a   4 2 2
+empty   abc 0 0 1
+a       abc 1 1 1
+aaa     abc 3 1 1
+abc     abc 3 1 1
+abcab   ab  4 2 2
+1abc1   abc 3 1 2

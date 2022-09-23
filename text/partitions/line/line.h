@@ -15,15 +15,16 @@ struct Line {
 /// @return number of lines in the buffer
 size_t count_n_lines(const char *buffer);
 
-/// @brief Reads 1 line from stdin
+/// @brief Parses buffer into lines
 ///
-/// @param line pointer to the Line
-/// @param start pointer to the start of the line
+/// @param buffer pointer to the buffer to parse
+/// @param[out] n_lines pointer to variable where
+/// number of lines store to
 ///
-/// @return number of read symbols
-size_t set_line(void *voidptr_line, const char *start);
+/// @return pointer to array of Lines in dynamic memory
+void *parse_buffer_lines(char *buffer, size_t *n_lines);
 
-/// @brief Prints 1 line in stream
+/// @brief Prints one line in stream
 ///
 /// @param[in] pointer to the Line
 /// @param[in] stream stream to print

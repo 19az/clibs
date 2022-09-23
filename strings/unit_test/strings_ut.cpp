@@ -8,21 +8,25 @@
 
 #include "../../error_handling/error_handling.h"
 
-//count_char_str-decl----------------------------------------------------------
+//count_chars_str-decl----------------------------------------------------------
 
 const size_t MAXLEN_COUNT_CHAR_STR = 10;
-struct CountCharStrArgs {
+struct CountCharsStrArgs {
     char str[MAXLEN_COUNT_CHAR_STR] = {};
-    char counting_char = 0;
-    size_t expected = 0;
-    size_t result   = 0;
+    char counting_chars[MAXLEN_COUNT_CHAR_STR] = {};
+    size_t exp_no_repeated = 0;
+    size_t res_no_repeated = 0;
+    size_t exp_repeated = 0;
+    size_t res_repeated = 0;
+    size_t exp_repeated_null = 0;
+    size_t res_repeated_null = 0;
 };
 
-size_t get_one_test_count_char_str(void *voidptr_test, const char *buffer);
+size_t get_one_test_count_chars_str(void *voidptr_test, const char *buffer);
 
-int run_one_test_count_char_str(void *voidptr_test);
+int run_one_test_count_chars_str(void *voidptr_test);
 
-void failed_test_report_count_char_str(const void *voidptr_test);
+void failed_test_report_count_chars_str(const void *voidptr_test);
 
 //skip_non_letters-decl----------------------------------------------------------
 
@@ -67,12 +71,12 @@ void failed_test_report_compare_lines_lex(const void *voidptr_test);
 //main--------------------------------------------------------------------------
 
 int main() {
-    unit_test("count_char_str",
+    unit_test("count_chars_str",
               "ccs_tests.txt",
-              sizeof(CountCharStrArgs),
-              get_one_test_count_char_str,
-              run_one_test_count_char_str,
-              failed_test_report_count_char_str);
+              sizeof(CountCharsStrArgs),
+              get_one_test_count_chars_str,
+              run_one_test_count_chars_str,
+              failed_test_report_count_chars_str);
 
     unit_test("skip_non_letters",
               "snl_tests.txt",
@@ -96,46 +100,63 @@ if (!strcmp(str, "empty")) { \
     strcpy(str, "");         \
 }
 
-//count_char_str-def----------------------------------------------------------
+//count_chars_str-def----------------------------------------------------------
 
-size_t get_one_test_count_char_str(void *voidptr_test, const char *buffer) {
-    CountCharStrArgs *test = (CountCharStrArgs*) voidptr_test;
+size_t get_one_test_count_chars_str(void *voidptr_test, const char *buffer) {
+    CountCharsStrArgs *test = (CountCharsStrArgs*) voidptr_test;
     int bytes_read = 0;
     int result = sscanf(buffer,
-                        "%s %c %lu %n",
+                        "%s %s %lu %lu %lu %n",
                         test->str,
-                        &test->counting_char,
-                        &test->expected,
+                        test->counting_chars,
+                        &test->exp_no_repeated,
+                        &test->exp_repeated,
+                        &test->exp_repeated_null,
                         &bytes_read);
-    ASSERT(result == 3 || result == EOF, "cannot read all arguments");
+    ASSERT(result == 5 || result == EOF, "cannot read all arguments");
     if (result == EOF) return 0;
 
     IS_STRING_EMPTY(test->str);
-    if (test->counting_char == '0')
-        test->counting_char = '\0';
 
     return (size_t) bytes_read;
 }
 
-int run_one_test_count_char_str(void *voidptr_test) {
-    CountCharStrArgs *test = (CountCharStrArgs*) voidptr_test;
+int run_one_test_count_chars_str(void *voidptr_test) {
+    CountCharsStrArgs *test = (CountCharsStrArgs*) voidptr_test;
 
-    size_t result = count_char_str(test->str, test->counting_char);
-    test->result = result;
-    return result == test->expected;
+    size_t res_no_repeated
+        = count_chars_str(test->str, test->counting_chars, 0, 0);
+    size_t res_repeated
+        = count_chars_str(test->str, test->counting_chars, 0, 1);
+    size_t res_repeated_null
+        = count_chars_str(test->str, test->counting_chars, 1, 1);
+    test->res_no_repeated   = res_no_repeated;
+    test->res_repeated      = res_repeated;
+    test->res_repeated_null = res_repeated_null;
+    return (res_no_repeated   == test->exp_no_repeated) &&
+           (res_repeated      == test->exp_repeated)    &&
+           (res_repeated_null == test->exp_repeated_null);
 }
 
-void failed_test_report_count_char_str(const void *voidptr_test) {
-    const CountCharStrArgs *test = (const CountCharStrArgs*) voidptr_test;
+void failed_test_report_count_chars_str(const void *voidptr_test) {
+    const CountCharsStrArgs *test = (const CountCharsStrArgs*) voidptr_test;
 
-    printf("str           = %s\n"
-           "counting char = %c\n"
-           "expected      = %lu\n"
-           "result        = %lu\n",
+    printf("str: %s\n"
+           "counting chars: %s\n"
+           "exp no repeated = %lu\n"
+           "res no repeated = %lu\n"
+           "exp repeated = %lu\n"
+           "res repeated = %lu\n"
+           "exp repeated null = %lu\n"
+           "res repeated null = %lu\n",
            test->str,
-           test->counting_char,
-           test->expected,
-           test->result);
+           test->counting_chars,
+           test->exp_no_repeated,
+           test->res_no_repeated,
+           test->exp_repeated,
+           test->res_repeated,
+           test->exp_repeated_null,
+           test->res_repeated_null);
 }
 
 //skip_non_letters-def---------------------------------------------------------

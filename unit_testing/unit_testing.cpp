@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 
 #include "colorful_text.h"
@@ -28,7 +29,7 @@ void unit_test(const char *func_name,
                        CODE_FROM_ERR_RWFILE))
         return;
 
-    size_t n_tests = count_char_str(buffer, '\n');
+    size_t n_tests = count_chars_str(buffer, "\n", 1, 1);
     ASSERT(n_tests != 0);
     unsigned char *tests = (unsigned char*) calloc(n_tests, size);
     if (tests == NULL) {
