@@ -70,6 +70,19 @@ int compare_lines_lex(const void *ptr1, const void *ptr2) {
                                        1, 1);
 }
 
+int compare_lines_lex_utf8(const void *ptr1, const void *ptr2) {
+    ASSERT(ptr1 != NULL);
+    ASSERT(ptr2 != NULL);
+    if (ptr1 == ptr2)
+        return 0;
+
+    const Line *line1 = (const Line*) ptr1;
+    const Line *line2 = (const Line*) ptr2;
+    return compare_lines_lexicographic_utf8(line1->start, line1->start + line1->len,
+                                            line2->start, line2->start + line2->len,
+                                            1, 1);
+}
+
 int compare_lines_reverse_lex(const void *ptr1, const void *ptr2) {
     ASSERT(ptr1 != NULL);
     ASSERT(ptr2 != NULL);
@@ -83,4 +96,16 @@ int compare_lines_reverse_lex(const void *ptr1, const void *ptr2) {
                                        1, 1);
 }
 
+int compare_lines_reverse_lex_utf8(const void *ptr1, const void *ptr2) {
+    ASSERT(ptr1 != NULL);
+    ASSERT(ptr2 != NULL);
+    if (ptr1 == ptr2)
+        return 0;
+
+    const Line *line1 = (const Line*) ptr1;
+    const Line *line2 = (const Line*) ptr2;
+    return compare_lines_lexicographic_utf8(line1->start + line1->len - 1, line1->start - 1,
+                                            line2->start + line2->len - 1, line2->start - 1,
+                                            1, 1);
+}
 #include "../../../error_handling/undef_error_handling.h"

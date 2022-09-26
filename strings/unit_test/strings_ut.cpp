@@ -1,4 +1,5 @@
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,9 +36,9 @@ struct SkipNonLettersArgs {
     char  str[MAXLEN_SKIP_NON_LETTERS] = {};
     char *start       = 0;
     char *finish      = 0;
-    int   step        = 0;
     char *expected    = NULL;
     char *result      = NULL;
+    char is_utf8      = 0;
 };
 
 size_t get_one_test_skip_non_letters(void *voidptr_test, const char *buffer);
@@ -60,6 +61,7 @@ struct CompareLinesLexArgs {
     int result_skip_non_letters   = 0;
     int result_neglect_case       = 0;
     int result_reverse_order      = 0;
+    char is_utf8                  = 0;
 };
 
 size_t get_one_test_compare_lines_lex(void *voidptr_test, const char *buffer);
@@ -71,6 +73,7 @@ void failed_test_report_compare_lines_lex(const void *voidptr_test);
 //main--------------------------------------------------------------------------
 
 int main() {
+    setlocale(LC_ALL, "en_US.utf8");
     unit_test("count_chars_str",
               "ccs_tests.txt",
               sizeof(CountCharsStrArgs),
@@ -169,12 +172,12 @@ size_t get_one_test_skip_non_letters(void *voidptr_test, const char *buffer) {
  
     int bytes_read = 0;
     int result = sscanf(buffer,
-                        "%s %d %d %d %d %n",
+                        "%s %d %d %d %c %n",
                         test->str,
                         &start_index,
                         &finish_index,
-                        &test->step,
                         &expected_index,
+                        &test->is_utf8,
                         &bytes_read);
     ASSERT(result == 5 || result == EOF, "cannot read all arguments");
     if (result == EOF) return 0;
@@ -190,23 +193,27 @@ size_t get_one_test_skip_non_letters(void *voidptr_test, const char *buffer) {
 int run_one_test_skip_non_letters(void *voidptr_test) {
     SkipNonLettersArgs *test = (SkipNonLettersArgs*) voidptr_test;
 
-    test->result = skip_non_letters(test->start, test->finish, test->step);
+    if (test->is_utf8 == '1') {
+        test->result = skip_non_letters_utf8(test->start, test->finish);
+    } else {
+        test->result = skip_non_letters(test->start, test->finish);
+    }
     return (test->result == test->expected);
 }
 
 void failed_test_report_skip_non_letters(const void *voidptr_test) {
     const SkipNonLettersArgs *test = (const SkipNonLettersArgs*) voidptr_test;
 
-    printf("str            = %s\n"
+    printf("is_utf8: %c\n"
+           "str            = %s\n"
            "start index    = %ld\n"
            "finish index   = %ld\n"
-           "step           = %d\n"
            "expected index = %ld\n"
            "result index   = %ld\n",
+           test->is_utf8,
            test->str,
            test->start  - test->str,
            test->finish - test->str,
-           test->step,
            test->expected - test->str,
            test->result - test->str);
 }
@@ -218,15 +225,16 @@ size_t get_one_test_compare_lines_lex(void *voidptr_test, const char *buffer) {
  
     int bytes_read = 0;
     int result = sscanf(buffer,
-                        "%s %s %d %d %d %d %n",
+                        "%s %s %d %d %d %d %c %n",
                         test->str1,
                         test->str2,
                         &test->expected_default,
                         &test->expected_skip_non_letters,
                         &test->expected_neglect_case,
                         &test->expected_reverse_order,
+                        &test->is_utf8,
                         &bytes_read);
-    ASSERT(result == 6 || result == EOF, "cannot read all arguments");
+    ASSERT(result == 7 || result == EOF, "cannot read all arguments");
     if (result == EOF) return 0;
 
     EVAL(MAP(IS_STRING_EMPTY, test->str1, test->str2))
@@ -241,18 +249,35 @@ int run_one_test_compare_lines_lex(void *voidptr_test) {
     char *left2  = test->str2;
     char *right1 = strchr(test->str1, '\0');
     char *right2 = strchr(test->str2, '\0');
-    test->result_default          = compare_lines_lexicographic(left1, right1, left2, right2, 0, 0);
-    test->result_skip_non_letters = compare_lines_lexicographic(left1, right1, left2, right2, 1, 0);
-    test->result_neglect_case     = compare_lines_lexicographic(left1, right1, left2, right2, 0, 1);
-    test->result_reverse_order    = compare_lines_lexicographic(right1 - 1, left1 - 1, right2 - 1, left2 - 1, 0, 0);
-    test->result_default          = (test->result_default <  0) ? -1 :
-                                    (test->result_default == 0) ?  0 : 1;
-    test->result_skip_non_letters = (test->result_skip_non_letters <  0) ? -1 :
-                                    (test->result_skip_non_letters == 0) ?  0 : 1;
-    test->result_neglect_case     = (test->result_neglect_case <  0) ? -1 :
-                                    (test->result_neglect_case == 0) ?  0 : 1;
-    test->result_reverse_order    = (test->result_reverse_order <  0) ? -1 :
-                                    (test->result_reverse_order == 0) ?  0 : 1;
+    if (test->is_utf8 == '1') {
+        test->result_default          = compare_lines_lexicographic_utf8(left1, right1, left2, right2, 0, 0);
+        test->result_skip_non_letters = compare_lines_lexicographic_utf8(left1, right1, left2, right2, 1, 0);
+        test->result_neglect_case     = compare_lines_lexicographic_utf8(left1, right1, left2, right2, 0, 1);
+        test->result_reverse_order    = compare_lines_lexicographic_utf8(right1 - 1, left1 - 1, right2 - 1, left2 - 1, 0, 0);
+
+        test->result_default          = (test->result_default <  0) ? -1 :
+                                        (test->result_default == 0) ?  0 : 1;
+        test->result_skip_non_letters = (test->result_skip_non_letters <  0) ? -1 :
+                                        (test->result_skip_non_letters == 0) ?  0 : 1;
+        test->result_neglect_case     = (test->result_neglect_case <  0) ? -1 :
+                                        (test->result_neglect_case == 0) ?  0 : 1;
+        test->result_reverse_order    = (test->result_reverse_order <  0) ? -1 :
+                                        (test->result_reverse_order == 0) ?  0 : 1;
+    } else {
+        test->result_default          = compare_lines_lexicographic(left1, right1, left2, right2, 0, 0);
+        test->result_skip_non_letters = compare_lines_lexicographic(left1, right1, left2, right2, 1, 0);
+        test->result_neglect_case     = compare_lines_lexicographic(left1, right1, left2, right2, 0, 1);
+        test->result_reverse_order    = compare_lines_lexicographic(right1 - 1, left1 - 1, right2 - 1, left2 - 1, 0, 0);
+
+        test->result_default          = (test->result_default <  0) ? -1 :
+                                        (test->result_default == 0) ?  0 : 1;
+        test->result_skip_non_letters = (test->result_skip_non_letters <  0) ? -1 :
+                                        (test->result_skip_non_letters == 0) ?  0 : 1;
+        test->result_neglect_case     = (test->result_neglect_case <  0) ? -1 :
+                                        (test->result_neglect_case == 0) ?  0 : 1;
+        test->result_reverse_order    = (test->result_reverse_order <  0) ? -1 :
+                                        (test->result_reverse_order == 0) ?  0 : 1;
+    }
 
     return (test->expected_default          == test->result_default)          &&
            (test->expected_skip_non_letters == test->result_skip_non_letters) &&
@@ -263,7 +288,8 @@ int run_one_test_compare_lines_lex(void *voidptr_test) {
 void failed_test_report_compare_lines_lex(const void *voidptr_test) {
     const CompareLinesLexArgs *test = (const CompareLinesLexArgs*) voidptr_test;
 
-    printf("str1                      = %s\n"
+    printf("id_utf8: %c\n"
+           "str1                      = %s\n"
            "str2                      = %s\n"
            "expected default          = %2d\n"
            "result   default          = %2d\n\n"
@@ -273,6 +299,7 @@ void failed_test_report_compare_lines_lex(const void *voidptr_test) {
            "result   neglect case     = %2d\n\n"
            "expected reverse order    = %2d\n"
            "result   reverse order    = %2d\n",
+           test->is_utf8,
            test->str1,
            test->str2,
            test->expected_default,
