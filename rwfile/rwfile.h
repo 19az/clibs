@@ -54,7 +54,7 @@ void *read_whole_file(const char   *filename,
                             ERR_SUPPORT_DECL);
 
 #include "../error_handling/undef_error_handling.h"
-#ifndef ERR_TYPE_RWFILE_CPP
+#ifndef RWFILE_CPP
     #undef ERR_TYPE
 #endif
 

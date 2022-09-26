@@ -15,13 +15,15 @@ Text *construct_text_file(const char *filename, const Part *part) {
                                            &err_read_whole_file);
     
     ASSERT(buffer != NULL);
-    if (ERR_CHECK_CODE(err_read_whole_file, CODE_FROM_ERR_RWFILE))
+    if (ERR_CHECK_CODE(stderr,
+                       err_read_whole_file,
+                       CODE_FROM_ERR_RWFILE))
         return NULL;
 
     size_t n_parts = 0;
     void *parts = part->parse_buffer(buffer, &n_parts);
     if (parts == NULL || n_parts == 0) { // TO DO: ADD ERROR HANDLER
-        ERR_REPORT_MSSG("error during parsing text");
+        ERR_REPORT_MSSG(stderr, "error during parsing text");
         if (buffer)
             free(buffer);
         return NULL;
@@ -29,7 +31,7 @@ Text *construct_text_file(const char *filename, const Part *part) {
 
     Text *text = (Text*) calloc(1, sizeof(Text));
     if (text == NULL) {
-        ERR_REPORT_MSSG("error during calloc");
+        ERR_REPORT_MSSG(stderr, "error during calloc");
         free(parts);
         free(buffer);
         return NULL;

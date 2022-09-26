@@ -1,4 +1,6 @@
 
+#undef VAR_INFO
+
 #undef ERR_REPORT_MSG
 #undef ERR_REPORT_CODE
 #undef ERR_REPORT

@@ -25,7 +25,8 @@ void unit_test(const char *func_name,
                                                  sizeof(char),
                                                  NULL,
                                                  &err_read_whole_file);
-    if (ERR_CHECK_CODE(err_read_whole_file, 
+    if (ERR_CHECK_CODE(stderr,
+                       err_read_whole_file, 
                        CODE_FROM_ERR_RWFILE))
         return;
 
@@ -33,7 +34,7 @@ void unit_test(const char *func_name,
     ASSERT(n_tests != 0);
     unsigned char *tests = (unsigned char*) calloc(n_tests, size);
     if (tests == NULL) {
-        ERR_REPORT_MSSG("tests calloc error");
+        ERR_REPORT_MSSG(stderr, "tests calloc error");
         free(buffer);
         return;
     }
@@ -46,7 +47,7 @@ void unit_test(const char *func_name,
     YELLOW(printf("Unit test for func %s is started\n", func_name);)
     char *results = (char*) calloc(n_tests, sizeof(char));
     if (results == NULL) {
-        ERR_REPORT_MSSG("results calloc error");
+        ERR_REPORT_MSSG(stderr, "results calloc error");
         free(tests);
         free(buffer);
         return;
