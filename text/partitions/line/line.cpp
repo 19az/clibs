@@ -43,7 +43,12 @@ void print_line_stream(FILE *stream, const void *voidptr_line) {
 
     const Line *line = (const Line*) voidptr_line;
     ASSERT(line->start != NULL);
-    fprintf(stream, "%s\n", line->start);
+    if (compare_lines_lexicographic_utf8(line->start,
+                                         line->start + line->len,
+                                         "",
+                                         "",
+                                         1, 1) != 0)
+        fprintf(stream, "%s\n", line->start);
 }
 
 int compare_lines_length(const void *ptr1, const void *ptr2) {
@@ -79,8 +84,8 @@ int compare_lines_lex_utf8(const void *ptr1, const void *ptr2) {
     const Line *line1 = (const Line*) ptr1;
     const Line *line2 = (const Line*) ptr2;
     return compare_lines_lexicographic_utf8(line1->start, line1->start + line1->len,
-                                            line2->start, line2->start + line2->len,
-                                            1, 1);
+                                           line2->start, line2->start + line2->len,
+                                           1, 1);
 }
 
 int compare_lines_reverse_lex(const void *ptr1, const void *ptr2) {
@@ -105,7 +110,7 @@ int compare_lines_reverse_lex_utf8(const void *ptr1, const void *ptr2) {
     const Line *line1 = (const Line*) ptr1;
     const Line *line2 = (const Line*) ptr2;
     return compare_lines_lexicographic_utf8(line1->start + line1->len - 1, line1->start - 1,
-                                            line2->start + line2->len - 1, line2->start - 1,
-                                            1, 1);
+                                           line2->start + line2->len - 1, line2->start - 1,
+                                           1, 1);
 }
 #include "../../../error_handling/undef_error_handling.h"
