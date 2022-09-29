@@ -20,18 +20,20 @@
 /// @param[in] failed_test_report pointer to the function
 /// which takes pointer to a test data and do report(prints
 /// it in stdout or in a file, for example)
-void unit_test(const char *func_name,
-               const char *tests_filename,
+void unit_test(const char* func_name,
+               const char* tests_filename,
+               
                size_t size,
-               size_t (*get_one_test_buf) (void*, const char*),
-               int (*run_one_test) (void*),
-               void (*failed_test_report) (const void*));
+
+               size_t (*get_one_test_buf)   (void*, const char*),
+               int    (*run_one_test)       (void*),
+               void   (*failed_test_report) (const void*));
 
 /// @brief Shows numbers of failed test after unit test
 /// 
 /// @param[in] results array with results of each test
 /// @param[in] nTests number of tests
-void report(const char *results, size_t nTests);
+void report(const char* results, size_t nTests);
 
 #undef HEADER
 #endif /* UNIT_TESTING_H */

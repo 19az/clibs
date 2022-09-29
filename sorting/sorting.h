@@ -14,7 +14,9 @@
 ///
 /// @note if a == b returns, function does not check
 /// if given pointers and size are valid
-void swap_objects(void *voidptr_a, void *voidptr_b, size_t size);
+void swap_objects(void*   voidptr_a,
+                  void*   voidptr_b,
+                  size_t  size);
 
 /// @brief Replaces elements of the given array in reverse order
 ///
@@ -24,7 +26,7 @@ void swap_objects(void *voidptr_a, void *voidptr_b, size_t size);
 ///
 /// @note if count == 0 returns, function does not check
 /// if given pointers and size are valid
-void reverse_order(void *ptr, size_t count, size_t size);
+void reverse_order(void* ptr, size_t count, size_t size);
 
 /// @brief Sorts the given array pointed to by ptr in ascending order.
 ///
@@ -40,7 +42,7 @@ void reverse_order(void *ptr, size_t count, size_t size);
 ///
 /// @note if count == 0 returns, function does not check
 /// if given pointers and size are valid
-void bubble_sort(void    *ptr,
+void bubble_sort(void*    ptr,
                  size_t   count,
                  size_t   size,
                  int    (*comp)(const void*, const void*));
@@ -57,8 +59,8 @@ void bubble_sort(void    *ptr,
 ///
 /// @note if count == 0 returns, function does not check
 /// if given pointers and size are valid
-uint8_t *partition_quick_sort(uint8_t  *left,
-                              uint8_t  *right,
+uint8_t *partition_quick_sort(uint8_t*  left,
+                              uint8_t*  right,
                               size_t    size,
                               int     (*comp)(const void*, const void*));
 
@@ -78,7 +80,7 @@ uint8_t *partition_quick_sort(uint8_t  *left,
 /// if given pointers and size are valid
 ///
 /// @note udefined behaviour if given comparator is not reflexive
-void quick_sort(void    *ptr,
+void quick_sort(void*    ptr,
                 size_t   count,
                 size_t   size,
                 int    (*comp)(const void*, const void*));

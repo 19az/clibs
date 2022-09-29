@@ -23,7 +23,7 @@
 /// @note err = NULL by dafault
 ///
 /// @see ERR_SUPPORT, ASSERT, ERR_HANDLED
-size_t get_file_size(const char *filename ERR_SUPPORT_DECL);
+size_t get_file_size(const char* filename ERR_SUPPORT_DECL);
 
 /// @brief Reads whole from file into buffer
 ///
@@ -48,9 +48,9 @@ size_t get_file_size(const char *filename ERR_SUPPORT_DECL);
 /// count = NULL and err = NULL by default
 ///
 /// @see ERR_SUPPORT, ASSERT, ERR_HANDLED
-void *read_whole_file(const char   *filename,
+void *read_whole_file(const char*   filename,
                             size_t  size,
-                            size_t *count = NULL
+                            size_t* count = NULL
                             ERR_SUPPORT_DECL);
 
 #include "../error_handling/undef_error_handling.h"

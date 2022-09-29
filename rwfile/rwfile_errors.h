@@ -10,27 +10,24 @@
 #include "../error_handling/special_macros.h"
 
 #define ERR_TYPE_RWFILE uint64_t
-#define CODE_FROM_ERR_RWFILE(err) err
-#define MSSG_FROM_ERR_RWFILE(err) "bad error"
 
 /// Return codes for rwfile lib
-const ERR_TYPE_RWFILE ERR_FILE_STAT_RWFILE =
-MULTI_CHAR_CONST_8('R','W','F',' ','S','T','A','T');
+enum errors_rwfile : ERR_TYPE_RWFILE 
+{
+    ERR_FILE_STAT_RWFILE = 1,      ///< cannot get file stat
+    ERR_FILE_SIZE_RWFILE = 1 << 1, ///< bad size of the file
+    ERR_FILE_OPEN_RWFILE = 1 << 2, ///< cannot open file
+    ERR_FILE_READ_RWFILE = 1 << 3, ///< cannot read file
+    ERR_FILE_CLOS_RWFILE = 1 << 4, ///< cannot close file
+    ERR_MEM_ALLOC_RWFILE = 1 << 5  ///< error during malloc
+};
 
-const ERR_TYPE_RWFILE ERR_FILE_SIZE_RWFILE =
-MULTI_CHAR_CONST_8('R','W','F',' ','S','I','Z','E');
-                                                    
-const ERR_TYPE_RWFILE ERR_FILE_OPEN_RWFILE =
-MULTI_CHAR_CONST_8('R','W','F',' ','O','P','E','N');
-
-const ERR_TYPE_RWFILE ERR_FILE_READ_RWFILE =
-MULTI_CHAR_CONST_8('R','W','F',' ','R','E','A','D');
-
-const ERR_TYPE_RWFILE ERR_FILE_CLOS_RWFILE =
-MULTI_CHAR_CONST_8('R','W','F',' ','C','L','O','S');
-
-const ERR_TYPE_RWFILE ERR_MEM_ALLOC_RWFILE = 
-MULTI_CHAR_CONST_8('R','W','F',' ','A','L','O','C');
+#define ERR_FILE_STAT_RWFILE_MSSG "cannot get file stat"
+#define ERR_FILE_SIZE_RWFILE_MSSG "bad file size in stat"
+#define ERR_FILE_OPEN_RWFILE_MSSG "cannot open file"
+#define ERR_FILE_READ_RWFILE_MSSG "cannot read file"
+#define ERR_FILE_CLOS_RWFILE_MSSG "cannot close file"
+#define ERR_MEM_ALLOC_RWFILE_MSSG "error during calloc"
 
 #include "../error_handling/undef_special_macros.h"
 

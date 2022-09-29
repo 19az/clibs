@@ -131,16 +131,19 @@ int run_one_test_comp_lex(void *voidptr_test) {
     CompLexArgs *test = (CompLexArgs*) voidptr_test;
 
     size_t n_lines = 0;
+    
     Line *line1 = (Line*) parse_buffer_lines(test->str1, &n_lines);
     Line *line2 = (Line*) parse_buffer_lines(test->str2, &n_lines);
 
-    int res_dir = compare_lines_lex(line1, line2);
+    int res_dir = compare_lines_lex        (line1, line2);
     int res_rev = compare_lines_reverse_lex(line1, line2);
+
     test->res_dir_order = (res_dir > 0) ? 1 : (res_dir == 0) ? 0 : -1;
     test->res_rev_order = (res_rev > 0) ? 1 : (res_rev == 0) ? 0 : -1;
 
     free(line1);
     free(line2);
+
     return (test->res_dir_order == test->exp_dir_order &&
             test->res_rev_order == test->exp_rev_order); 
 }
@@ -161,7 +164,7 @@ void failed_test_report_comp_lex(const void *voidptr_test) {
            test->exp_dir_order,
            test->res_dir_order,
            test->exp_rev_order,
-           test->res_dir_order);
+           test->res_rev_order);
 }
 
 #include "../../../../error_handling/undef_error_handling.h"
