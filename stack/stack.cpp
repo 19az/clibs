@@ -31,7 +31,7 @@
             fprintf(dd.logfile, "\n");                                 \
             fflush(dd.logfile);                                        \
         }                                                              \
-        fprintf(dd.logfile, "\t}\n}\n");                               \
+        fprintf(dd.logfile, "\t}\n}\n\n");                             \
         fflush(dd.logfile);
 #endif
 

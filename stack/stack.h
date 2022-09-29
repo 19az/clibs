@@ -1,4 +1,7 @@
 
+#ifndef STACK_H
+#define STACK_H
+
 #include <stdlib.h>
 
 #include "stack_errors.h"
@@ -50,7 +53,26 @@ void StackPush(Stack *stk, Elem_t elem ERR_SUPPORT_DECL);
 /// @return removed element
 Elem_t StackPop(Stack *stk ERR_SUPPORT_DECL);
 
+#ifdef NDEBUG
+    #define StackCtor(stk, size) StackCtor_(stk, size)
+#else
+    #define StackCtor(stk, size)                           \
+        stk->var_data           = VAR_INFO(stk);           \
+        stk->DEBUG_DATA.logfile = fopen(logfilename, "w"); \
+        StackCtor_(stk, size);
+#endif
+
+#ifdef NDEBUG
+    #define StackDtor(stk) StackDtor_(stk)
+#else
+    #define StackDtor(stk)               \
+        fclose(stk->debug_data.logfile); \
+        StackDtor_(stk);
+#endif
+
 #ifndef STACK_CPP
     #undef ERR_TYPE
 #endif
 #include "../error_handling/undef_error_handling.h"
+
+#endif /* STACK_H */
