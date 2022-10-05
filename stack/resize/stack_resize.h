@@ -3,6 +3,11 @@
 ///
 /// @brief StackResize_() функция для изменения вместимости массива стека
 
+#ifndef STACK_RESIZE_H
+#define STACK_RESIZE_H
+
+#include "../stack.h"
+
 /// @brief Изменяет вместимость стека
 ///
 /// @param stk указатель на стек
@@ -24,4 +29,6 @@ void StackResize_(Stack* stk, size_t new_size ERR_SUPPORT_DECL);
 /// @note Если в logfile передан NULL, то
 /// дамп будет печататься в stderr
 void StackResizeDump_(FILE* logfile, const Stack* stk, size_t new_size);
+
+#endif /* STACK_RESIZE_H */
 

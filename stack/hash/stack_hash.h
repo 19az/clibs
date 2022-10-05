@@ -1,7 +1,12 @@
 
 /// @file stack_hash.h
 ///
-/// @brief Хэш защита полей стека
+/// @brief Хэш защита полей и элементов стека
+
+#ifndef STACK_HASH_H
+#define STACK_HASH_H
+
+#include "../stack.h"
 
 /// @brief Посчитать хэш структуры стека
 ///
@@ -12,4 +17,6 @@ HASH_TYPE_STACK GetHashStructStack_(const Stack* stk);
 ///
 /// @param[in] stk указатель на стек
 HASH_TYPE_STACK GetHashDataStack_(const Stack* stk);
+
+#endif /* STACK_HASH_H */
 

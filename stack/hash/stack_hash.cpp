@@ -1,6 +1,9 @@
 
 #include <stdlib.h>
 
+#define STACK_CPP
+#include "stack_hash.h"
+
 #include "../../hash/gnu_hash.h"
 
 /// @brief Алгоритм хэширования
@@ -23,6 +26,4 @@ HASH_TYPE_STACK GetHashDataStack_(const Stack* stk)
     return HASH_ALG( (const char*)  stk->data,
                      (const char*) (stk->data + stk->capacity));
 }
-
-#undef HASH_ALG
 

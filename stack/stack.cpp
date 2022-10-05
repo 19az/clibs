@@ -4,24 +4,6 @@
 
 #include "../error_handling/error_handling.h"
 
-/// @brief Указатель на левую канарейку массива стека
-#define L_CANARY_PTR_DATA (((CANARY_STACK*) stk->data) - 1)
-
-/// @brief Указатель на правую канарейку массива стека
-#define R_CANARY_PTR_DATA ((CANARY_STACK*) (stk->data + stk->capacity))
-
-/// @brief Позволяет добавть в дамп информацию о месте вызова дампа
-
-#ifdef NDEBUG
-    #define StackDump(logfile, stk) ((void) 0)
-#else
-    #define StackDump(logfile, stk) \
-        DUMP(logfile);              \
-                                    \
-        StackDump_(logfile, stk);   \
-
-#endif /* ifndef NDEBUG: StackDump() */
-
 /// @brief Запуск верификотор
 /// и обновление переменной ошибки значением,
 /// возвращенным верификатором
@@ -53,10 +35,12 @@ void StackCtor_(Stack* stk, size_t new_size ERR_SUPPORT_DEFN)
         return;
 
     if ( 
+
 #ifdef CANARY_PROTECT
          (stk->l_canary != POISON_CANARY_STACK)     ||
          (stk->r_canary != POISON_CANARY_STACK)     ||
 #endif
+
          (stk->data     != POISON_ELEM_T_PTR_STACK) ||
 
          (stk->size     != POISON_SIZE_T_STACK)     ||
@@ -127,6 +111,7 @@ void StackPush(Stack *stk, Elem_t elem ERR_SUPPORT_DEFN)
 
 Elem_t StackPop(Stack *stk ERR_SUPPORT_DEFN)
 {
+
 #ifdef POISON_ELEM_T_PROTECT
     Elem_t default_ret_value = POISON_ELEM_T_STACK;
 #else
@@ -163,12 +148,4 @@ Elem_t StackPop(Stack *stk ERR_SUPPORT_DEFN)
 
     return ret_value;
 }
-
-#include "dump/stack_dump.cpp"
-#include "error/stack_error.cpp"
-#include "resize/stack_resize.cpp"
-
-#ifdef HASH_PROTECT
-    #include "hash/stack_hash.cpp"
-#endif
 

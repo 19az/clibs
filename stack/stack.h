@@ -25,6 +25,16 @@ struct Stack
 
     Elem_t*      data     = POISON_ELEM_T_PTR_STACK;
 
+#ifdef CANARY_PROTECT
+
+    /// @brief Указатель на левую канарейку массива стека
+    #define L_CANARY_PTR_DATA (((CANARY_STACK*) stk->data) - 1)
+
+    /// @brief Указатель на правую канарейку массива стека
+    #define R_CANARY_PTR_DATA ((CANARY_STACK*) (stk->data + stk->capacity))
+
+#endif
+
     size_t       size     = POISON_SIZE_T_STACK;
     size_t       capacity = POISON_SIZE_T_STACK;
     
@@ -43,6 +53,18 @@ struct Stack
 
 #ifdef HASH_PROTECT
     #include "hash/stack_hash.h"
+#endif
+
+/// @brief Позволяет добавть в дамп информацию о месте вызова дампа
+
+#ifdef NDEBUG
+    #define StackDump(logfile, stk) ((void) 0)
+#else
+    #define StackDump(logfile, stk) \
+        DUMP(logfile);              \
+                                    \
+        StackDump_(logfile, stk);
+
 #endif
 
 /// @brief Конструктор стека, принимающий размер,
@@ -100,6 +122,8 @@ Elem_t StackPop(Stack* stk ERR_SUPPORT_DECL);
 
 #ifndef STACK_CPP
     #undef ERR_TYPE
+    #undef L_CANARY_PTR_DATA
+    #undef R_CANARY_PTR_DATA
 #endif
 
 #endif /* STACK_H */

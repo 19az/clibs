@@ -3,6 +3,11 @@
 ///
 /// @brief Проверка стека на валидность
 
+#ifndef STACK_ERROR_H
+#define STACK_ERROR_H
+
+#include "../stack.h"
+
 /// @brief Проверяет на валидность поля структуры стека
 /// и элементы массива
 ///
@@ -29,4 +34,6 @@ ERR_TYPE_STACK StackError_(const Stack* stk ERR_SUPPORT_DECL);
 ///
 /// @see ERR_SUPPORT_DECL
 ERR_TYPE_STACK StackErrorElems_(const Stack* stk ERR_SUPPORT_DECL);
+
+#endif /* STACK_ERROR_H */
 

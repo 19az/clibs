@@ -1,6 +1,9 @@
 
 #include <stdlib.h>
 
+#define STACK_CPP
+#include "stack_error.h"
+
 /// @brief Проверяет условие ошибки, если оно истинно,
 /// пишет сообщение об ошибке в LOGFILE (если не NDEBUG)
 /// и добавляет код ошибки в возращаемое значение
@@ -120,4 +123,3 @@ ERR_TYPE_STACK StackErrorElems_(const Stack* stk ERR_SUPPORT_DEFN)
     return ret_err;
 }
 
-#undef ERR_HANDLE_MSSG_STACK 

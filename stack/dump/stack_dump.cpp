@@ -1,6 +1,9 @@
 
 #include <stdio.h>
 
+#define STACK_CPP
+#include "stack_dump.h"
+
 void StackDump_(FILE* logfile, const Stack* stk)
 {
     if (logfile == NULL) logfile = stderr;

@@ -1,10 +1,13 @@
 
-/// @brief Позволяет добавить в StackResizeDump_() дамп информацию
-/// о месте вызова дампа
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#define STACK_CPP
+#include "stack_resize.h"
+
+/// @brief Позволяет добавить в StackResizeDump_() дамп информацию
+/// о месте вызова дампа
 
 #ifdef NDEBUG
     #define StackResizeDump(logfile, stk) ((void) 0)
@@ -116,8 +119,6 @@ void StackResizeDump_(FILE* logfile, const Stack* stk, size_t new_size)
             stk, new_size);
     fflush(logfile);
 
-    StackDump(logfile, stk);
+    StackDump_(logfile, stk);
 }
-
-#undef StackDumpResize
 
