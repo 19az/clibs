@@ -38,20 +38,30 @@ void* read_whole_file(const char*   filename,
 
     if (err_get_file_size)
     {
-        ERR_CHECK_MSSG(stderr, err_get_file_size, ERR_FILE_STAT_RWFILE);
-        ERR_SET(ERR_FILE_STAT_RWFILE);
+        if (ERR_CHECK_MSSG(stderr,
+                           err_get_file_size,
+                           ERR_FILE_STAT_RWFILE))
+        {
+            ERR_SET(ERR_FILE_STAT_RWFILE);
+        }
 
-        ERR_CHECK_MSSG(stderr, err_get_file_size, ERR_FILE_SIZE_RWFILE);
-        ERR_SET(ERR_FILE_SIZE_RWFILE);
+        if (ERR_CHECK_MSSG(stderr,
+                           err_get_file_size,
+                           ERR_FILE_SIZE_RWFILE))
+        {
+            ERR_SET(ERR_FILE_SIZE_RWFILE);
+        }
 
         return NULL;
     }
 
     FILE *file = fopen(filename, "r");
+
     if (  file == NULL
         ERR_HANDLED_MSSG(stderr, ERR_FILE_OPEN_RWFILE)) return NULL;
 
     void *buffer = calloc(file_size + 1, size); // ADDS 0 element to the end !!!
+                                                
     if (  buffer == NULL
         ERR_HANDLED_MSSG(stderr, ERR_MEM_ALLOC_RWFILE)) return NULL;
 

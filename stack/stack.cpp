@@ -4,167 +4,171 @@
 
 #include "../error_handling/error_handling.h"
 
+/// @brief Указатель на левую канарейку массива стека
+#define L_CANARY_PTR_DATA (((CANARY_STACK*) stk->data) - 1)
+
+/// @brief Указатель на правую канарейку массива стека
+#define R_CANARY_PTR_DATA ((CANARY_STACK*) (stk->data + stk->capacity))
+
+/// @brief Позволяет добавть в дамп информацию о месте вызова дампа
+
 #ifdef NDEBUG
-    #define STACK_DUMP(stk) ((void)0)
+    #define StackDump(logfile, stk) ((void) 0)
 #else
-    #define STACK_DUMP(stk)                                            \
-        DEBUG_DATA dd = stk->debug_data;                               \
-        fprintf(dd.logfile,                                            \
-                "%s at %s\(%d\):\n"                                    \
-                "Stack [%p] \"%s\" at %s at %s\(%d\):\n"               \
-                "{\n"                                                  \
-                "data [%p]\n"                                          \
-                "size     = %lu\n"                                     \
-                "capacity = %lu\n"                                     \
-                "\t{\n",                                               \
-                __PRETTY_FUNCTION__, __FILE__, __LINE__,               \
-                (Stack*) dd.stk_ptr, dd.var_name,                      \
-                dd.func_name, dd.file, dd.line,                        \
-                stk->data, stack->size, stack->capacity);              \
-        fflush(dd.logfile);                                            \
-                                                                       \
-        for (size_t index = 0; index <= stk->capacity; index++) {      \
-            fprintf(dd.logfile, "\t%c [%d] = ",                        \
-                                (index < size) ? '*' : ' ',            \
-                                index + 1);                            \
-            fprintf_elem_t(dd.logfile, data[index]);                   \
-            fprintf(dd.logfile, "\n");                                 \
-            fflush(dd.logfile);                                        \
-        }                                                              \
-        fprintf(dd.logfile, "\t}\n}\n\n");                             \
-        fflush(dd.logfile);
+    #define StackDump(logfile, stk) \
+        DUMP(logfile);              \
+                                    \
+        StackDump_(logfile, stk);   \
+
+#endif /* ifndef NDEBUG: StackDump() */
+
+/// @brief Запуск верификотор
+/// и обновление переменной ошибки значением,
+/// возвращенным верификатором
+#define StackError(logfile, stk)                          \
+    (StackError_(stk, (err) ? err : NULL)                 \
+        ERR_HANDLED_MSSG(logfile, ERR_VERIFICATOR_STACK))
+
+/// @brief Обновление хэша структуры и массива стека
+#ifdef HASH_PROTECT
+    #define UPDATE_HASH_STACK(stk)                         \
+        stk->hash_struct_value = GetHashStructStack_(stk); \
+        stk->hash_data_value   = GetHashDataStack_  (stk); 
+#else
+    #define UPDATE_HASH_STACK(stk) ((void) 0)
 #endif
 
-#define STACK_ERR_START(stk)                                  \
-    ERR_TYPE_STACK verificator_err =                          \
-        (STACK_DUMP(stk), check_hash(stk),  StackError(stk)); \
-    (err) ? err |= verificator_err : 0;
-
-#define STACK_ERR_FINISH(stk)                                                \
-    verificator_err = (STACK_DUMP(stk), update_hash(stk),  StackError(stk)); \
-    (err) ? err |= verificator_err : 0;
-
-ERR_TYPE_STACK StackError(Stack *stk) {
-    ERR_TYPE_STACK err = 0;
-    err |= (stk->data     == NULL)                ? ERR_DATA_NULL_STACK : 0;
-    err |= (stk->size     >  capacity)            ? ERR_SIZE_CAPC_STACK : 0;
-    err |= (stk->size     == POISON_STACK_SIZE_T) ? ERR_SIZE_POIS_STACK : 0;
-    err |= (stk->capacity == POISON_STACK_SIZE_T) ? ERR_CAPC_POIS_STACK : 0;
-
-    // TO DO: add canaries
-
-    return err;
-}
-
-void StackCtor_(Stack *stk, size_t size ERR_SUPPORT_DECL) {
-    STACK_ERR_START(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return;
+#define VERIFY_RETURN_STACK(stk, ret) \
+                                      \
+    if (StackError(LOGFILE, stk)) {   \
+        StackDump (LOGFILE, stk);     \
+                                      \
+        return ret;                   \
     }
 
+void StackCtor_(Stack* stk, size_t new_size ERR_SUPPORT_DEFN)
+{
+    if (stk == NULL
+        ERR_HANDLED_MSSG(LOGFILE, ERR_BAD_STACK_PTR_STACK))
+        return;
+
+    if ( 
 #ifdef CANARY_PROTECT
-    // TO DO: add canaries
-#else
-    stk->data = (Elem_t*) calloc(size, sizeof(Elem_t));
-    if (stk->data == NULL ERR_HANDLED_MSSG(stk->debug_data.logfile,
-                                           ERR_CALLOC_STACK,
-                                           /* TO DO: add mssg from err */)) {
-        return;
-    }
+         (stk->l_canary != POISON_CANARY_STACK)     ||
+         (stk->r_canary != POISON_CANARY_STACK)     ||
 #endif
-    stk->capacity = size;
+         (stk->data     != POISON_ELEM_T_PTR_STACK) ||
 
-    STACK_ERR_FINISH(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
+         (stk->size     != POISON_SIZE_T_STACK)     ||
+         (stk->capacity != POISON_SIZE_T_STACK) 
+       ) 
+    {
+        ERR_REPORT_MSSG(LOGFILE,
+            "Attempt constructing used and not destructed stack");
+
         return;
     }
+
+    stk->data = NULL;
+
+    stk->size     = 0;
+    stk->capacity = 0;
+
+    ERR_TYPE_STACK err_resize = 0;
+    StackResize_(stk, new_size, &err_resize);
+
+    if (ERR_CHECK_MSSG(LOGFILE, err_resize, ERR_REALLOC_STACK))
+        return;
+
+    UPDATE_HASH_STACK  (stk );
+    VERIFY_RETURN_STACK(stk,);
 }
 
-void StackDtor_(Stack *stk ERR_SUPPORT_DECL) {
-    STACK_ERR_START(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return;
-    }
+void StackDtor(Stack* stk ERR_SUPPORT_DEFN)
+{
+    VERIFY_RETURN_STACK(stk,);
+
+    ASSERT(stk->data != NULL &&
+           stk->data != POISON_ELEM_T_PTR_STACK);
 
 #ifdef CANARY_PROTECT
-    // TO DO: add canaries
+    ASSERT(L_CANARY_PTR_DATA != NULL);
+    
+    free(L_CANARY_PTR_DATA);
 #else
     free(stk->data);
 #endif
-    stk->data     = POISON_STACK_FREE_STACK_PTR;
-    stk->capacity = POISON_STACK_SIZE_T;
-    stk->size     = POISON_STACK_SIZE_T;
 
-    STACK_ERR_FINISH(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return;
-    }
+    stk->data     = POISON_ELEM_T_PTR_STACK;
+    stk->capacity = POISON_SIZE_T_STACK;
+    stk->size     = POISON_SIZE_T_STACK;
 }
 
-void StackResize_(Stack *stk, size_t new_size ERR_SUPPORT_DECL) {
-    STACK_ERR_START(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return;
-    }
-
-    stk->data = (Elem_t*) reallocarray(stk->data, new_size, sizeof(Elem_t)); // TO DO: better resize strategy
-    if (stk->data == NULL ERR_HANDLED_MSSG(stk->debug_data.logfile,
-                                           ERR_REALLOC_STACK,
-                                           /* TO DO: add mssg from err */)) {
-        return;
-    }
-
-    STACK_ERR_FINISH(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return;
-    }
-}
-
-void StackPush(Stack *stk, Elem_t elem ERR_SUPPORT_DECL) {
-    STACK_ERR_START(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return;
-    }
+void StackPush(Stack *stk, Elem_t elem ERR_SUPPORT_DEFN)
+{
+    VERIFY_RETURN_STACK(stk, );
 
     ERR_TYPE_STACK err_resize = 0;
     StackResize_(stk, stk->size + 1, &err_resize);
-    if (err_resize) {
-        ERR_CHECK_MSSG(stk->debug_data.logfile, err_resize); // TO DO: add mssg from err
-        return;
-    }
-    stk->data[size++] = elem;
 
-    STACK_ERR_FINISH(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
+    if (ERR_CHECK_MSSG(LOGFILE, err_resize, ERR_REALLOC_STACK))
         return;
-    }
+
+    ASSERT(stk->data != NULL &&
+           stk->data != POISON_ELEM_T_PTR_STACK);
+
+    ASSERT(stk->capacity >= stk->size);
+
+    stk->data[stk->size++] = elem;
+
+    UPDATE_HASH_STACK  (stk );
+    VERIFY_RETURN_STACK(stk,);
 }
 
-Elem_t StackPop(Stack *stk ERR_SUPPORT_DECL) {
-    STACK_ERR_START(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return; // POISON_ELEM_T ???
-    }
+Elem_t StackPop(Stack *stk ERR_SUPPORT_DEFN)
+{
+#ifdef POISON_ELEM_T_PROTECT
+    Elem_t default_ret_value = POISON_ELEM_T_STACK;
+#else
+    Elem_t default_ret_value = Elem_t{};
+#endif
+    
+    VERIFY_RETURN_STACK(stk, default_ret_value);
 
-    Elem_t ret_value = stk->data[--(stk->size)];
-    StackResize_(stk, stk->size); // TO DO: add error handling
+    if (stk->size == 0) return default_ret_value;
 
-    STACK_ERR_FINISH(stk);
-    if (verificator_err) {
-        STACK_DUMP(stk);
-        return; // POISON_ELEM_T ???
+    ASSERT(stk->data != NULL &&
+           stk->data != POISON_ELEM_T_PTR_STACK);
+
+    ASSERT(stk->capacity >= stk->size);
+
+    Elem_t ret_value = stk->data[stk->size - 1];
+
+#ifdef POISON_ELEM_T_PROTECT
+    stk->data[stk->size - 1] = POISON_ELEM_T_STACK;
+#endif
+
+    ERR_TYPE_STACK err_resize = 0;
+    StackResize_(stk, stk->size - 1, &err_resize);
+
+    if (ERR_CHECK_MSSG(LOGFILE, err_resize, ERR_REALLOC_STACK))
+    {
+        return default_ret_value;
     }
+    
+    stk->size--;
+
+    UPDATE_HASH_STACK  (stk);
+    VERIFY_RETURN_STACK(stk, default_ret_value);
 
     return ret_value;
 }
 
-#include "../error_handling/undef_error_handling.h"
+#include "dump/stack_dump.cpp"
+#include "error/stack_error.cpp"
+#include "resize/stack_resize.cpp"
+
+#ifdef HASH_PROTECT
+    #include "hash/stack_hash.cpp"
+#endif
+

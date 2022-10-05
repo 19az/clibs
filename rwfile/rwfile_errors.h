@@ -11,7 +11,7 @@
 
 #define ERR_TYPE_RWFILE uint64_t
 
-/// Return codes for rwfile lib
+/// Errors that might occur in rwfile
 enum errors_rwfile : ERR_TYPE_RWFILE 
 {
     ERR_FILE_STAT_RWFILE = 1,      ///< cannot get file stat
