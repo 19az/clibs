@@ -2,23 +2,10 @@
 #define STACK_CPP
 #include "stack.h"
 
-#include "../error_handling/error_handling.h"
-
-/// @brief Запуск верификотор
-/// и обновление переменной ошибки значением,
-/// возвращенным верификатором
-#define StackError(logfile, stk)                          \
-    (StackError_(stk, (err) ? err : NULL)                 \
-        ERR_HANDLED_MSSG(logfile, ERR_VERIFICATOR_STACK))
-
-/// @brief Обновление хэша структуры и массива стека
-#ifdef HASH_PROTECT
-    #define UPDATE_HASH_STACK(stk)                         \
-        stk->hash_struct_value = GetHashStructStack_(stk); \
-        stk->hash_data_value   = GetHashDataStack_  (stk); 
-#else
-    #define UPDATE_HASH_STACK(stk) ((void) 0)
-#endif
+#include "dump/dump.h"
+#include "error/error.h"
+#include "resize/resize.h"
+#include "hash/hash.h"
 
 #define VERIFY_RETURN_STACK(stk, ret) \
                                       \

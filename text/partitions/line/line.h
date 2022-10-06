@@ -1,7 +1,10 @@
+
 #ifndef LINE_H
 #define LINE_H
 
 /// @file line.h
+///
+/// @brief Разбиение текста на строки
 
 struct Line
 {

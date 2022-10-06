@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#define LINE_CPP
 #include "line.h"
 #include "../../../sorting/sorting.h"
 #include "../../../strings/strings.h"
@@ -138,4 +139,3 @@ int compare_lines_reverse_lex_utf8(const void* ptr1, const void* ptr2) {
                                             1, 1);
 }
 
-#include "../../../error_handling/undef_error_handling.h"

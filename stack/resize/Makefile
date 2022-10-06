@@ -1,2 +1,2 @@
-SOURCES += $(INCLUDES_DIR)/stack/resize/stack_resize.cpp
+SOURCES += $(INCLUDES_DIR)/stack/resize/resize.cpp
 

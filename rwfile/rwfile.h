@@ -1,3 +1,4 @@
+
 #ifndef RWFILE_H
 #define RWFILE_H
 
@@ -53,9 +54,9 @@ void *read_whole_file(const char*   filename,
                             size_t* count = NULL
                             ERR_SUPPORT_DECL);
 
-#include "../error_handling/undef_error_handling.h"
 #ifndef RWFILE_CPP
     #undef ERR_TYPE
+    #include "../error_handling/undef_error_handling.h"
 #endif
 
 #endif /* RWFILE_H */

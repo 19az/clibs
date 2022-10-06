@@ -4,7 +4,11 @@
 #include <stdlib.h>
 
 #define STACK_CPP
-#include "stack_resize.h"
+#include "resize.h"
+
+#include "../dump/dump.h"
+
+static void StackResizeDump_(FILE* logfile, const Stack* stk, size_t new_size);
 
 /// @brief Позволяет добавить в StackResizeDump_() дамп информацию
 /// о месте вызова дампа
@@ -108,7 +112,7 @@ void StackResize_(Stack* stk, size_t new_size ERR_SUPPORT_DEFN)
 #endif
 }
 
-void StackResizeDump_(FILE* logfile, const Stack* stk, size_t new_size)
+static void StackResizeDump_(FILE* logfile, const Stack* stk, size_t new_size)
 {
     ASSERT(stk     != NULL);
 

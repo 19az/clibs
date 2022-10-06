@@ -1,6 +1,5 @@
 #ifndef STRINGS_H
 #define STRINGS_H
-#define HEADER
 
 /// @file stdlike_strings.h
 
@@ -34,5 +33,4 @@ char *my_strchr(const char *str, int ch);
 /// @brief strcmp from <string.h>
 int my_strcmp(const char *str1, const char *str2);
 
-#undef HEADER
 #endif /* STRINGS_H */

@@ -1,6 +1,7 @@
 
 /// @file error_handling.h
-/// @brief Макросы для удобной обработки и логгирование ошибок
+///
+/// @brief Макросы для удобной обработки и логгирования ошибок
 
 #include <stdio.h>
 #include <stdint.h>
@@ -81,8 +82,8 @@ typedef struct
 #ifdef NDEBUG
     #define ASSERT_MSSG(cond, msg) ((void)0)
 #else
-    #define ASSERT_MSSG(cond, msg)                 \
-        if (!(cond)) ERR_REPORT_MSSG(stderr, msg);
+    #define ASSERT_MSSG(cond, msg)                       \
+        ( (!(cond)) ? ERR_REPORT_MSSG(stderr, msg) : 0 )
 #endif
 
 /// @brief "Перегрузка" ассерта от количества аргументов: проверяется

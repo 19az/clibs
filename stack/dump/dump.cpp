@@ -2,7 +2,11 @@
 #include <stdio.h>
 
 #define STACK_CPP
-#include "stack_dump.h"
+#include "dump.h"
+
+#include "../hash/hash.h"
+
+static void StackDumpElems_(FILE* logfile, const Stack* stk);
 
 void StackDump_(FILE* logfile, const Stack* stk)
 {
@@ -27,22 +31,18 @@ void StackDump_(FILE* logfile, const Stack* stk)
 
 #ifdef CANARY_PROTECT
     fprintf(logfile, "left struct canary:  ");
-    FPRINTF_CANARY_STACK(logfile, &(stk->l_canary));
+    FPRINTF_CANARY_STACK(logfile, stk->l_canary);
 
     fprintf(logfile, "right struct canary: ");
-    FPRINTF_CANARY_STACK(logfile, &(stk->r_canary));
+    FPRINTF_CANARY_STACK(logfile, stk->r_canary);
 #endif
 
 #ifdef HASH_PROTECT
-    HASH_TYPE_STACK hash = stk->hash_struct_value;
-    
     fprintf(logfile, "struct hash value: ");
-    FPRINTF_HASH_STACK(logfile, &hash);
-
-    hash = GetHashStructStack_(stk);
+    FPRINTF_HASH_STACK(logfile, stk->hash_struct_value);
 
     fprintf(logfile, "real struct hash:  ");
-    FPRINTF_HASH_STACK(logfile, &hash)
+    FPRINTF_HASH_STACK(logfile, GetHashStructStack_(stk));
 #endif
 
     fprintf(logfile,
@@ -60,11 +60,10 @@ void StackDump_(FILE* logfile, const Stack* stk)
     fflush(logfile);
 }
 
-void StackDumpElems_(FILE* logfile, const Stack* stk)
+static void StackDumpElems_(FILE* logfile, const Stack* stk)
 {    
     ASSERT(stk     != NULL);
-
-    if (logfile == NULL) logfile = stderr;
+    ASSERT(logfile != NULL);
 
     fprintf(logfile, "\t{\n");
 
@@ -79,34 +78,35 @@ void StackDumpElems_(FILE* logfile, const Stack* stk)
 
 #ifdef CANARY_PROTECT
     fprintf(logfile, "\tleft  data canary: ");
-    FPRINTF_CANARY_STACK(logfile, L_CANARY_PTR_DATA);
+
+    ASSERT( (L_CANARY_PTR_DATA) != NULL);
+    FPRINTF_CANARY_STACK(logfile, *(L_CANARY_PTR_DATA));
 #endif
 
 #ifdef HASH_PROTECT
-    HASH_TYPE_STACK hash = stk->hash_data_value;
-
     fprintf(logfile, "\tdata hash value: ");
-    FPRINTF_HASH_STACK(logfile, &hash);
+    FPRINTF_HASH_STACK(logfile, stk->hash_data_value);
         
-    hash = GetHashDataStack_(stk);
-
     fprintf(logfile, "\treal data hash:  ");
-    FPRINTF_HASH_STACK(logfile, &hash);
+    FPRINTF_HASH_STACK(logfile, GetHashDataStack_(stk));
 #endif
 
-    for (size_t index = 0; index < stk->capacity; index++)
+    for (size_t index = 0; index < stk->capacity; index++) // Не всегда нужно выводить все элементы
     {
         fprintf(logfile,
                 "\t%c [%2lu] = ",
                 (index < stk->size) ? '*' : ' ',
                 index + 1);
 
-        FPRINTF_ELEM_T_STACK(logfile, stk->data + index);
+        ASSERT(stk->data != NULL);
+        FPRINTF_ELEM_T_STACK(logfile, stk->data[index]);
     }
 
 #ifdef CANARY_PROTECT
     fprintf(logfile, "\tright data canary: ");
-    FPRINTF_CANARY_STACK(logfile, R_CANARY_PTR_DATA);
+
+    ASSERT( (R_CANARY_PTR_DATA) != NULL);
+    FPRINTF_CANARY_STACK(logfile, *(R_CANARY_PTR_DATA));
 #endif
 
     fprintf(logfile, "\t}\n");

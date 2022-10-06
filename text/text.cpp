@@ -1,5 +1,7 @@
 
+#define TEXT_CPP
 #include "text.h"
+
 #include "../rwfile/rwfile.h"
 
 #include "../error_handling/error_handling.h"
@@ -87,4 +89,3 @@ void destruct_text(Text* text) {
     free(text);
 }
 
-#include "../error_handling/undef_error_handling.h"

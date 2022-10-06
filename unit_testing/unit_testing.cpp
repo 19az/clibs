@@ -1,8 +1,10 @@
 
 #include <stdlib.h>
 
-#include "colorful_text.h"
+#define UNIT_TESTING_CPP
 #include "unit_testing.h"
+
+#include "colorful_text.h"
 #include "../rwfile/rwfile.h"
 #include "../strings/strings.h"
 
@@ -122,4 +124,3 @@ void report(const char* results, size_t n_tests)
     printf("\n");
 }
 
-#include "../error_handling/undef_error_handling.h"

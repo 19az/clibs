@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 
-#include "settings/stack_settings.h"
+#include "settings/set.h"
 #define ERR_TYPE ERR_TYPE_STACK
 #include "../error_handling/error_handling.h"
 
@@ -26,14 +26,16 @@ struct Stack
     Elem_t*      data     = POISON_ELEM_T_PTR_STACK;
 
 #ifdef CANARY_PROTECT
-
+#ifdef STACK_CPP
+    
     /// @brief Указатель на левую канарейку массива стека
     #define L_CANARY_PTR_DATA (((CANARY_STACK*) stk->data) - 1)
 
     /// @brief Указатель на правую канарейку массива стека
     #define R_CANARY_PTR_DATA ((CANARY_STACK*) (stk->data + stk->capacity))
 
-#endif
+#endif /* STACK_CPP */
+#endif /* CANARY_PROTECT */
 
     size_t       size     = POISON_SIZE_T_STACK;
     size_t       capacity = POISON_SIZE_T_STACK;
@@ -46,26 +48,6 @@ struct Stack
     CANARY_STACK r_canary = POISON_CANARY_STACK;
 #endif
 };
-
-#include "dump/stack_dump.h"
-#include "error/stack_error.h"
-#include "resize/stack_resize.h"
-
-#ifdef HASH_PROTECT
-    #include "hash/stack_hash.h"
-#endif
-
-/// @brief Позволяет добавть в дамп информацию о месте вызова дампа
-
-#ifdef NDEBUG
-    #define StackDump(logfile, stk) ((void) 0)
-#else
-    #define StackDump(logfile, stk) \
-        DUMP(logfile);              \
-                                    \
-        StackDump_(logfile, stk);
-
-#endif
 
 /// @brief Конструктор стека, принимающий размер,
 /// который должен вмещать стек
@@ -121,9 +103,13 @@ void StackPush(Stack* stk, Elem_t elem ERR_SUPPORT_DECL);
 Elem_t StackPop(Stack* stk ERR_SUPPORT_DECL);
 
 #ifndef STACK_CPP
+    
     #undef ERR_TYPE
-    #undef L_CANARY_PTR_DATA
-    #undef R_CANARY_PTR_DATA
-#endif
+
+    #include "../error_handling/undef_error_handling.h"
+
+    #include "settings/undef.h"
+
+#endif /* STACK_CPP */
 
 #endif /* STACK_H */

@@ -2,6 +2,8 @@
 #define TEXT_H
 
 /// @file text.h
+///
+/// @brief Структура для работы с текстом и разбиение его на куски
 
 #include <stdlib.h>
 
@@ -50,6 +52,8 @@ void print_all_parts_stream(FILE* stream, const Text* text);
 /// @param text pointer to the text
 void destruct_text(Text* text);
 
-#include "../error_handling/undef_error_handling.h"
+#ifndef TEXT_CPP
+    #include "../error_handling/undef_error_handling.h"
+#endif
 
 #endif /* TEXT_H */

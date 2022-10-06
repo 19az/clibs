@@ -2,7 +2,9 @@
 #include <stdlib.h>
 
 #define STACK_CPP
-#include "stack_hash.h"
+#include "hash.h"
+
+#ifdef HASH_PROTECT
 
 #include "../../hash/gnu_hash.h"
 
@@ -26,4 +28,6 @@ HASH_TYPE_STACK GetHashDataStack_(const Stack* stk)
     return HASH_ALG( (const char*)  stk->data,
                      (const char*) (stk->data + stk->capacity));
 }
+
+#endif /* HASH_PROTECT */
 

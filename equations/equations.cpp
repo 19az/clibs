@@ -1,7 +1,9 @@
+
 #include <math.h>
 #include <stdio.h>
 
 #include "equations.h"
+
 #include "../error_handling/error_handling.h"
 
 int is_equal(double a, double b) {
@@ -91,4 +93,3 @@ int linear_eq_solve(double a, double b, double* root) {
     return n_roots;
 }
 
-#include "../error_handling/undef_error_handling.h"

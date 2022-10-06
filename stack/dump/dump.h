@@ -17,14 +17,17 @@
 /// дамп будет печататся в stderr
 void StackDump_(FILE* logfile, const Stack* stk);
 
-/// @brief Делает дамп элементов стека в логфайл
-///
-/// @param logfile поток, в который печатать дамп
-/// @param[in] stk указатель на стек
-///
-/// @note Если в logfile передан NULL, то
-/// дамп будет печататся в stderr
-void StackDumpElems_(FILE* logfile, const Stack* stk);
+/// @brief Позволяет добавть в дамп информацию о месте вызова дампа
+
+#ifdef NDEBUG
+    #define StackDump(logfile, stk) ((void) 0)
+#else
+    #define StackDump(logfile, stk) \
+        DUMP(logfile);              \
+                                    \
+        StackDump_(logfile, stk);
+
+#endif
 
 #endif /* STACK_DUMP_H */
 

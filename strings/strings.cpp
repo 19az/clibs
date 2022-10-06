@@ -6,7 +6,9 @@
 #include <wchar.h>
 #include <wctype.h>
 
+#define STRINGS_CPP
 #include "strings.h"
+
 #include "../error_handling/error_handling.h"
 
 size_t count_chars_str(const char* str,

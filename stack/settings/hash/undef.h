@@ -1,0 +1,4 @@
+
+#undef HASH_TYPE_STACK
+
+#undef FPRINTF_HASH_STACK

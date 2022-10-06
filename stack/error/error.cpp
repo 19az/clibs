@@ -2,7 +2,9 @@
 #include <stdlib.h>
 
 #define STACK_CPP
-#include "stack_error.h"
+#include "error.h"
+
+#include "../hash/hash.h"
 
 /// @brief Проверяет условие ошибки, если оно истинно,
 /// пишет сообщение об ошибке в LOGFILE (если не NDEBUG)
@@ -14,6 +16,8 @@
         ret_err |= err;                  \
     }
 
+static ERR_TYPE_STACK StackErrorElems_(const Stack* stk ERR_SUPPORT_DEFN);
+    
 ERR_TYPE_STACK StackError_(const Stack* stk ERR_SUPPORT_DEFN)
 {
     ERR_TYPE_STACK ret_err = 0;
@@ -84,7 +88,9 @@ ERR_TYPE_STACK StackError_(const Stack* stk ERR_SUPPORT_DEFN)
     return  ret_err;
 }
 
-ERR_TYPE_STACK StackErrorElems_(const Stack* stk ERR_SUPPORT_DEFN)
+static ERR_TYPE_STACK StackErrorElems_(const Stack* stk ERR_SUPPORT_DEFN [[maybe_unused]]) // Ничего не делает, если нет
+                                                                                           // ни POISON_PROTECT,
+                                                                                           // ни CANARY_PROTECT
 {
     ASSERT(stk != NULL);
 

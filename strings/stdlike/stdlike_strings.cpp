@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define STDLIKE_STRINGS_CPP
 #include "stdlike_strings.h"
+
 #include "../../error_handling/error_handling.h"
 
 int my_puts(const char *str) {
@@ -129,4 +131,3 @@ int my_strcmp(const char *str1, const char *str2) {
     return 0;
 }
 
-#include "../../error_handling/undef_error_handling.h"

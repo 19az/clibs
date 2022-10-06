@@ -1,2 +1,2 @@
-SOURCES += $(INCLUDES_DIR)/stack/error/stack_error.cpp
+SOURCES += $(INCLUDES_DIR)/stack/error/error.cpp
 

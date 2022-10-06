@@ -77,4 +77,3 @@ void* read_whole_file(const char*   filename,
     return buffer;
 }
 
-#include "../error_handling/undef_error_handling.h"
