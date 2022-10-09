@@ -6,7 +6,7 @@
 #define STACK_CPP
 #include "resize.h"
 
-#include "../dump/dump.h"
+#include "stack/dump/dump.h"
 
 static void StackResizeDump_(FILE* logfile, const Stack* stk, size_t new_size);
 

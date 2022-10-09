@@ -6,7 +6,7 @@
 #ifndef STACK_HASH_H
 #define STACK_HASH_H
 
-#include "../stack.h"
+#include "stack/stack.h"
 
 #ifdef HASH_PROTECT
 

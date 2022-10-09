@@ -9,7 +9,7 @@
 #define STRINGS_CPP
 #include "strings.h"
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 size_t count_chars_str(const char* str,
                        const char* chs,
@@ -202,4 +202,4 @@ const char* skip_non_letters_utf8(const char* start, const char* finish) {
     return start;
 }
 
-#include "../error_handling/undef_error_handling.h"
+#include "error_handling/undef_error_handling.h"

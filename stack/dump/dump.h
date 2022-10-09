@@ -6,7 +6,7 @@
 #ifndef STACK_DUMP_H
 #define STACK_DUMP_H
 
-#include "../stack.h"
+#include "stack/stack.h"
 
 /// @brief Делает дамп полей структуры стека в логфайл
 ///

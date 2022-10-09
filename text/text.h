@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 /// Struct to represent one part of the partition of the text
 struct Part
@@ -52,8 +52,6 @@ void print_all_parts_stream(FILE* stream, const Text* text);
 /// @param text pointer to the text
 void destruct_text(Text* text);
 
-#ifndef TEXT_CPP
-    #include "../error_handling/undef_error_handling.h"
-#endif
+#include "error_handling/undef_error_handling.h"
 
 #endif /* TEXT_H */

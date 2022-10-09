@@ -3,7 +3,7 @@
 
 #include "sorting.h"
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 void reverse_order(void* ptr, size_t count, size_t size)
 {
@@ -162,4 +162,4 @@ void swap_objects(void*   voidptr_a,
 
 #undef SWAPTYPE
 
-#include "../error_handling/undef_error_handling.h"
+#include "error_handling/undef_error_handling.h"

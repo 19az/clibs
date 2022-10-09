@@ -4,10 +4,10 @@
 
 #define LINE_CPP
 #include "line.h"
-#include "../../../sorting/sorting.h"
-#include "../../../strings/strings.h"
+#include "sorting/sorting.h"
+#include "strings/strings.h"
 
-#include "../../../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 size_t count_n_lines(const char* buffer)
 {

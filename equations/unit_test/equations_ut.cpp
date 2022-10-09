@@ -2,8 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 
-#include "../equations.h"
-#include "../../unit_testing/unit_testing.h"
+#include "equations/equations.h"
+#include "unit_testing/unit_testing.h"
 
 const char *tests_filename_se = "sesut.txt";
 const char *tests_filename_le = "lesut.txt";

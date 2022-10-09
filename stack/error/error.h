@@ -6,7 +6,7 @@
 #ifndef STACK_ERROR_H
 #define STACK_ERROR_H
 
-#include "../stack.h"
+#include "stack/stack.h"
 
 /// @brief Проверяет на валидность поля структуры стека
 /// и элементы массива

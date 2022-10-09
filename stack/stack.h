@@ -10,7 +10,7 @@
 
 #include "settings/set.h"
 #define ERR_TYPE ERR_TYPE_STACK
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 struct Stack
 {
@@ -106,7 +106,7 @@ Elem_t StackPop(Stack* stk ERR_SUPPORT_DECL);
     
     #undef ERR_TYPE
 
-    #include "../error_handling/undef_error_handling.h"
+    #include "error_handling/undef_error_handling.h"
 
     #include "settings/undef.h"
 

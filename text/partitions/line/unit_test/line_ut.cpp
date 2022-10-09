@@ -5,9 +5,9 @@
 #include <stdlib.h>
 
 #include "../line.h"
-#include "../../../../unit_testing/unit_testing.h"
+#include "unit_testing/unit_testing.h"
 
-#include "../../../../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 //leni-decl---------------------------------------------------------------------
 
@@ -167,4 +167,3 @@ void failed_test_report_comp_lex(const void *voidptr_test) {
            test->res_rev_order);
 }
 
-#include "../../../../error_handling/undef_error_handling.h"

@@ -1,10 +1,10 @@
 
 #include <string.h>
 
-#include "../text.h"
-#include "../../unit_testing/unit_testing.h"
+#include "text/text.h"
+#include "unit_testing/unit_testing.h"
 
-#include "../../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 //text-decl---------------------------------------------------------------------
 
@@ -87,4 +87,3 @@ void failed_test_report_text(const void *voidptr_test) {
     ASSERT(voidptr_test != NULL);
 }
 
-#include "../../error_handling/undef_error_handling.h"

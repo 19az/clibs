@@ -6,7 +6,7 @@
 
 #ifdef HASH_PROTECT
 
-#include "../../hash/gnu_hash.h"
+#include "hash/gnu_hash.h"
 
 /// @brief Алгоритм хэширования
 #define HASH_ALG(...) gnu_hash(__VA_ARGS__)

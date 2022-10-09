@@ -4,7 +4,7 @@
 #define STACK_CPP
 #include "error.h"
 
-#include "../hash/hash.h"
+#include "stack/hash/hash.h"
 
 /// @brief Проверяет условие ошибки, если оно истинно,
 /// пишет сообщение об ошибке в LOGFILE (если не NDEBUG)

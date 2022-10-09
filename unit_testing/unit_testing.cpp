@@ -5,10 +5,10 @@
 #include "unit_testing.h"
 
 #include "colorful_text.h"
-#include "../rwfile/rwfile.h"
-#include "../strings/strings.h"
+#include "rwfile/rwfile.h"
+#include "strings/strings.h"
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 void unit_test(const char* func_name,
                const char* tests_filename,

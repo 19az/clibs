@@ -4,7 +4,7 @@
 
 #include "equations.h"
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 int is_equal(double a, double b) {
     return (fabs(a - b) < EPS);

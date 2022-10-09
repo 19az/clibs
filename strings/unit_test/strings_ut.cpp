@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../strings.h"
-#include "../../unit_testing/unit_testing.h"
+#include "strings/strings.h"
+#include "unit_testing/unit_testing.h"
 
-#include "../../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 //count_chars_str-decl----------------------------------------------------------
 
@@ -372,6 +372,3 @@ void failed_test_report_compare_lines_lex(const void* voidptr_test)
            test->res_reverse_order);
 }
 
-#undef IS_STRING_EMPTY
-
-#include "../../error_handling/undef_error_handling.h"

@@ -6,7 +6,7 @@
 #ifndef STACK_RESIZE_H
 #define STACK_RESIZE_H
 
-#include "../stack.h"
+#include "stack/stack.h"
 
 /// @brief Изменяет вместимость стека
 ///

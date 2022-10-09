@@ -7,20 +7,50 @@
 #define RWFILE_CPP 
 #include "rwfile.h"
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
+
+#define get_file_stat(filename, stat_varname, ret_value) \
+    ASSERT(filename  != NULL);                           \
+    ASSERT(*filename != '\0');                           \
+                                                         \
+    struct stat stat_varname = {};                       \
+                                                         \
+    if (stat(filename, &stat_varname) == -1              \
+        ERR_HANDLED_MSSG                                 \
+        (                                                \
+            stderr,                                      \
+            ERR_FILE_STAT_RWFILE                         \
+        )                                                \
+       )                                                 \
+        return ret_value;
 
 size_t get_file_size(const char* filename ERR_SUPPORT_DEFN)
 {
+    ASSERT(filename  != NULL);
+    ASSERT(*filename != '\0');
+
+    get_file_stat(filename, file_stat, 0);
+
+    if (file_stat.st_size < 0
+        ERR_HANDLED_MSSG
+        (
+             stderr,
+             ERR_FILE_SIZE_RWFILE
+        )
+       )
+        return 0;
+
+    return (size_t) file_stat.st_size;
+}
+
+struct timespec get_file_time_last_modification(const char* filename ERR_SUPPORT_DEFN)
+{
     ASSERT(filename != NULL);
+    ASSERT(*filename != '\0');
 
-    struct stat st = {};
-    if (stat(filename, &st) == -1
-        ERR_HANDLED_MSSG(stderr, ERR_FILE_STAT_RWFILE)) return 0;
+    get_file_stat(filename, file_stat, timespec{});
 
-    if (st.st_size < 0
-        ERR_HANDLED_MSSG(stderr, ERR_FILE_SIZE_RWFILE)) return 0;
-
-    return (size_t) st.st_size;
+    return file_stat.st_mtim;
 }
 
 void* read_whole_file(const char*   filename,
@@ -28,51 +58,65 @@ void* read_whole_file(const char*   filename,
                             size_t* count /* = NULL */
                             ERR_SUPPORT_DEFN)
 {
-    ASSERT(filename != NULL);
-    ASSERT(size     != 0);
+    ASSERT(filename  != NULL);
+    ASSERT(*filename != '\0');
+
+    ASSERT(size != 0);
     
-    (err) ? *err = 0 : 0;
+    size_t file_size  = get_file_size(filename, err);
 
-    ERR_TYPE_RWFILE err_get_file_size = 0;
-    size_t file_size  = get_file_size(filename, &err_get_file_size);
+    if (file_size == 0
+        ERR_HANDLED_MSSG
+        (
+            stderr,
+            ERR_EMPTY_FILE_RWFILE
+        )
+       )
+        return NULL;
 
-    if (err_get_file_size)
+    FILE *file = fopen(filename, "r");
+
+    if (file == NULL
+        ERR_HANDLED_MSSG
+        (
+            stderr,
+            ERR_FILE_OPEN_RWFILE
+        )
+       )
+        return NULL;
+
+    void *buffer = calloc(file_size + 1, size); // ADDS 0 element to the end !!!
+                                                
+    if (buffer == NULL
+        ERR_HANDLED_MSSG
+        (
+            stderr,
+            ERR_MEM_ALLOC_RWFILE
+        )
+       )
     {
-        if (ERR_CHECK_MSSG(stderr,
-                           err_get_file_size,
-                           ERR_FILE_STAT_RWFILE))
-        {
-            ERR_SET(ERR_FILE_STAT_RWFILE);
-        }
-
-        if (ERR_CHECK_MSSG(stderr,
-                           err_get_file_size,
-                           ERR_FILE_SIZE_RWFILE))
-        {
-            ERR_SET(ERR_FILE_SIZE_RWFILE);
-        }
+        fclose(file);
 
         return NULL;
     }
 
-    FILE *file = fopen(filename, "r");
-
-    if (  file == NULL
-        ERR_HANDLED_MSSG(stderr, ERR_FILE_OPEN_RWFILE)) return NULL;
-
-    void *buffer = calloc(file_size + 1, size); // ADDS 0 element to the end !!!
-                                                
-    if (  buffer == NULL
-        ERR_HANDLED_MSSG(stderr, ERR_MEM_ALLOC_RWFILE)) return NULL;
-
     size_t read_bytes = fread(buffer, 1, file_size, file);
-    (count) ? *count = read_bytes : 0;
 
     read_bytes < file_size
-        ERR_HANDLED_MSSG(stderr, ERR_FILE_READ_RWFILE);
+        ERR_HANDLED_MSSG
+        (
+            stderr,
+            ERR_FILE_READ_RWFILE
+        );
+    
+    (count) ? *count = read_bytes : 0;
 
     fclose(file) == EOF
-        ERR_HANDLED_MSSG(stderr, ERR_FILE_CLOS_RWFILE);
+        ERR_HANDLED_MSSG
+        (
+            stderr,
+            ERR_FILE_CLOSE_RWFILE
+        );
 
     return buffer;
 }

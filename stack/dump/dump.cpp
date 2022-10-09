@@ -4,7 +4,7 @@
 #define STACK_CPP
 #include "dump.h"
 
-#include "../hash/hash.h"
+#include "stack/hash/hash.h"
 
 static void StackDumpElems_(FILE* logfile, const Stack* stk);
 

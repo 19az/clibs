@@ -2,9 +2,9 @@
 #define TEXT_CPP
 #include "text.h"
 
-#include "../rwfile/rwfile.h"
+#include "rwfile/rwfile.h"
 
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 Text* construct_text_file(const char* filename, const Part* part)
 {
@@ -17,14 +17,13 @@ Text* construct_text_file(const char* filename, const Part* part)
                                            NULL,
                                            &err_read_whole_file);
 
-    if (err_read_whole_file)
+    if (err_read_whole_file || buffer == NULL)
     {
-        ERR_CHECK_MSSG(stderr, err_read_whole_file, ERR_FILE_STAT_RWFILE);
-        ERR_CHECK_MSSG(stderr, err_read_whole_file, ERR_FILE_SIZE_RWFILE);
-        ERR_CHECK_MSSG(stderr, err_read_whole_file, ERR_FILE_OPEN_RWFILE);
-        ERR_CHECK_MSSG(stderr, err_read_whole_file, ERR_FILE_READ_RWFILE);
-        ERR_CHECK_MSSG(stderr, err_read_whole_file, ERR_FILE_CLOS_RWFILE);
-        ERR_CHECK_MSSG(stderr, err_read_whole_file, ERR_MEM_ALLOC_RWFILE);
+        /*
+        TO DO: ADD ERROR HANDLING
+        */
+
+        ERR_REPORT_MSSG(stderr, "error during reading file");
 
         free(buffer);
 

@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../sorting.h"
-#include "../../unit_testing/unit_testing.h"
+#include "sorting/sorting.h"
+#include "unit_testing/unit_testing.h"
 
-#include "../../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
 //swap-dec----------------------------------------------------------------------
 
@@ -239,4 +239,4 @@ void failed_test_report_sorting(const void *voidptr_test) {
            test->result);
 }
 
-#include "../../error_handling/undef_error_handling.h"
+#include "error_handling/undef_error_handling.h"

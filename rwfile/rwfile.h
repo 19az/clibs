@@ -3,52 +3,49 @@
 #define RWFILE_H
 
 /// @file rwfile.h
-/// @brief Functions for input/output files
+/// @brief Библиотека функций ввода/вывода в/из файла
 
 #include "rwfile_errors.h"
 #define ERR_TYPE ERR_TYPE_RWFILE
-#include "../error_handling/error_handling.h"
+#include "error_handling/error_handling.h"
 
-/// @brief Gets file size in bytes
+/// @brief Находит размер файла в байтах
 ///
-/// @param[in] filename name of file
-/// @param[out] err if not NULL
-/// there would be stored error from ERR_SUPPORT
+/// @param[in] filename имя файла
 ///
-/// @return size of file in bytes
+/// @return размер файла в байтах
 ///
-/// @note uses ERR_SUPPORT, possible errors:
-/// ERR_FILE_STAT_RWFILE,
-/// ERR_FILE_SIZE_RWFILE
+/// @note поддерживает ERR_SUPPORT
 ///
-/// @note err = NULL by dafault
-///
-/// @see ERR_SUPPORT, ASSERT, ERR_HANDLED
+/// @see ERR_SUPPORT_DECL, ASSERT, ERR_HANDLED_MSSG
 size_t get_file_size(const char* filename ERR_SUPPORT_DECL);
 
-/// @brief Reads whole from file into buffer
+/// @brief Находит время посленего изменения файла
 ///
-/// @param[in] filename name of file which read from
-/// @param[in] size size of each object to read
-/// @param[out] count if not NULL 
-/// there would be storednumber of read bytes
-/// @param[out] err if not NULL
-/// there would be stored error from ERR_SUPPORT
+/// @param[in] filename имя файла
 ///
-/// @return buffer in dynamic memory with data from file
+/// @return struct timespec последнего изменения файла
 ///
-/// @note uses ERR_SUPPORT, possible errors:
-/// ERR_FILE_STAT_RWFILE,
-/// ERR_FILE_SIZE_RWFILE,
-/// ERR_FILE_OPEN_RWFILE,
-/// ERR_FILE_READ_RWFILE,
-/// ERR_FILE_CLOS_RWFILE,
-/// ERR_MEM_ALLOC_RWFILE
+/// @note поддерживает ERR_SUPPORT
 ///
-/// @note adds 0 element to the end of buffer,
-/// count = NULL and err = NULL by default
+/// @see ERR_SUPPORT_DECL, ASSERT, ERR_HANDLED_MSSG
+struct timespec get_file_time_last_modification(const char* filename ERR_SUPPORT_DECL);
+
+/// @brief Читает весь файл и возвращает буффер с его содержимым
 ///
-/// @see ERR_SUPPORT, ASSERT, ERR_HANDLED
+/// @param[in] filename имя файла
+/// @param[in] size размер типа данных файла
+/// @param[out] count указатель, по которому сохранить размер файла
+/// (по умолчанию NULL)
+///
+/// @return указатель на буффер в динамической памяти с прочитанным
+/// содержимым файла
+///
+/// @note поддерживает ERR_SUPPORT
+///
+/// @note добавляет нулевой элемент в конец буффера
+///
+/// @see ERR_SUPPORT_DECL, ASSERT, ERR_HANDLED_MSSG
 void *read_whole_file(const char*   filename,
                             size_t  size,
                             size_t* count = NULL
@@ -56,7 +53,8 @@ void *read_whole_file(const char*   filename,
 
 #ifndef RWFILE_CPP
     #undef ERR_TYPE
-    #include "../error_handling/undef_error_handling.h"
 #endif
+
+#include "error_handling/undef_error_handling.h"
 
 #endif /* RWFILE_H */
